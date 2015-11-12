@@ -1,5 +1,6 @@
 package com.android.cs414groupnewandroid.controllers;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -7,6 +8,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.android.cs414groupnewandroid.activities.MainActivity;
+import com.android.cs414groupnewandroid.adapters.OrderListAdapter;
 import com.android.cs414groupnewandroid.objects.*;
 
 import java.util.ArrayList;
@@ -18,7 +20,8 @@ import java.util.HashMap;
 public class OrderEditListener extends MyOnClickListener implements AdapterView.OnItemClickListener {
 	Order order;
 
-	public OrderEditListener() {
+	public OrderEditListener(Context context) {
+		super(context);
 		components = new HashMap<>();
 	}
 
@@ -32,9 +35,12 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		Pizza pizza = new Pizza();
 		if (v.equals(components.get("savePizza"))) {
 			ArrayList<Topping> selectedToppings = new ArrayList<>();
-			int[] tmpSelectedToppings = ((ListView) components.get("pizzaToppingsList")).getSelectedIndices();
-			for (int i = 0; i < tmpSelectedToppings.length; i++) {
-				selectedToppings.add(model.getCatalog().getToppings().get(tmpSelectedToppings[i]));
+			int[] tmpSelectedToppings = ((ListView) components.get("pizzaToppingsList")).getc;
+
+			for (int i = 0; i < ((ListView) components.get("pizzaToppingsList")).getAdapter().getCount(); i++) {
+				if(((View)((ListView) components.get("pizzaToppingsList")).getAdapter().getItem(i)).isSelected()) {
+					selectedToppings.add(model.getCatalog().getToppings().get(tmpSelectedToppings[i]));
+				}
 			}
 			// add new pizza to order
 			pizza.setToppingList(selectedToppings);
@@ -209,6 +215,9 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 	}
 
 	public void resetView() {
+		OrderListAdapter adapter = new OrderListAdapter(context, order.getOrderItems());
+		((ListView) components.get("orderList")).setAdapter(adapter);
+
 		((ListView) components.get("pizzaSizesList")).setListData(model.getCatalog().getSizes().toArray());
 		((ListView) components.get("pizzaSaucesList")).setListData(model.getCatalog().getSauces().toArray());
 		((ListView) components.get("pizzaToppingsList")).setListData(model.getCatalog().getToppings().toArray());

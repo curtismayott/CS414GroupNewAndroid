@@ -1,5 +1,6 @@
 package com.android.cs414groupnewandroid.controllers;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -14,8 +15,13 @@ public class MyOnClickListener implements View.OnClickListener, AdapterView.OnIt
     public int orderID;
     public Register model;
     HashMap<String, View> components;
+	Context context;
     //WindowManager manager;
     View view;
+
+	public MyOnClickListener(Context context){
+		this.context = context;
+	}
 
     public void setOrderID(int orderID){
         this.orderID = orderID;
