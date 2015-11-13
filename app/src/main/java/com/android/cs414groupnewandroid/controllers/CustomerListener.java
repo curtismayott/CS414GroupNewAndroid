@@ -1,11 +1,14 @@
 package com.android.cs414groupnewandroid.controllers;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.cs414groupnewandroid.activities.MainActivity;
 import com.android.cs414groupnewandroid.objects.Address;
@@ -19,21 +22,20 @@ import java.util.HashMap;
 /**
  * Created by darkbobo on 10/24/15.
  */
-public class CustomerListener extends MyOnClickListener {
+public class CustomerListener extends MyOnClickListener implements AdapterView.OnItemSelectedListener {
     Order order;
-    public CustomerListener(){
+    public CustomerListener(Context context){
+		super(context);
         components = new HashMap<>();
         orderID = -1;
     }
 
     @Override
     public void onClick(View v) {
-        if((components.get("cancelButton")).equals(v)) {
+        if((((Button)components.get("back"))).equals(v)) {
             clearEditTextFields();
             MainActivity.changeScreen(MainActivity.MAIN_MENU);
-        } else if((components.get("clearButton")).equals(v)) {
-            clearEditTextFields();
-        } else if((components.get("saveButton")).equals(v)) {
+        } else if((((Button)components.get("save"))).equals(v)) {
             Address address = new Address();
             address.setStreetAddress(((EditText) components.get("streetEditText")).getText().toString());
             address.setCity(((EditText) components.get("cityEditText")).getText().toString());
@@ -111,15 +113,25 @@ public class CustomerListener extends MyOnClickListener {
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		if(((Spinner)view).getSelectedItem().equals("Carry Out")){
+
+	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		if(((TextView)view).getText().toString().equals("Carry Out")){
 			(components.get("addressContainer")).setVisibility(View.GONE);
 			(components.get("phoneContainer")).setVisibility(View.VISIBLE);
-		}else if(((Spinner)view).getSelectedItem().equals("Pickup")){
+		}else if(((TextView)view).getText().toString().equals("Pickup")){
 			(components.get("addressContainer")).setVisibility(View.GONE);
-			(components.get("phoneContainer")).setVisibility(View.VISIBLE);
-		}else if(((Spinner)view).getSelectedItem().equals("Delivery")){
+			(components.get("phoneContainer")).setVisibility(View.GONE);
+		}else if(((TextView)view).getText().toString().equals("Delivery")){
 			(components.get("addressContainer")).setVisibility(View.VISIBLE);
 			(components.get("phoneContainer")).setVisibility(View.VISIBLE);
 		}
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+
 	}
 }

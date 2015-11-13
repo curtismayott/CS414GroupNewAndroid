@@ -35,10 +35,10 @@ public class MainActivity extends FragmentActivity {
 		fragments.put(MAIN_MENU, MainActivityFragment.newInstance());
 
 		listeners = new HashMap<>();
-		listeners.put(CUSTOMER, new CustomerListener());
-		listeners.put(PIZZA, new OrderEditListener());
+		listeners.put(CUSTOMER, new CustomerListener(this));
+		listeners.put(PIZZA, new OrderEditListener(this));
 		listeners.put(ORDER_EDIT, listeners.get(PIZZA));
-		listeners.put(MAIN_MENU, new MainMenuListener());
+		listeners.put(MAIN_MENU, new MainMenuListener(this));
 
 		for(String key : fragments.keySet()){
 			fragments.get(key).setController(listeners.get(key));
@@ -55,12 +55,13 @@ public class MainActivity extends FragmentActivity {
 
 	public static void changeScreen(String newView){
 		manager.beginTransaction().replace(R.id.container, fragments.get(newView)).commit();
+		listeners.get(newView).resetView();
 	}
 
 	public static void passOrderID(String newView, int orderID){
 		Message msg = new Message();
 		msg.arg1 = orderID;
 		msg.what = BaseFragment.PASS_ID;
-		fragments.get(newView).handler.dispatchMessage(msg);
+		listeners.get(newView).setOrderID(orderID);
 	}
 }

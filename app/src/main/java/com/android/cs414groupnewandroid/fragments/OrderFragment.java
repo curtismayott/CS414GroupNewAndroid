@@ -26,13 +26,24 @@ public class OrderFragment extends BaseFragment {
 		orderList = (ListView)rootView.findViewById(R.id.order_list);
 		Button send = (Button)rootView.findViewById(R.id.order_send);
 		TextView total = (TextView)rootView.findViewById(R.id.order_total);
+		Button addPizza = (Button)rootView.findViewById(R.id.order_pizza);
+		Button addDrink = (Button)rootView.findViewById(R.id.order_drink);
+		Button addSide = (Button)rootView.findViewById(R.id.order_side);
+
 		send.setOnClickListener(controller);
 		total.setOnClickListener(controller);
+		addPizza.setOnClickListener(controller);
+		addDrink.setOnClickListener(controller);
+		addSide.setOnClickListener(controller);
 		orderList.setOnItemClickListener(controller);
 
 		controller.registerComponent("sendOrder", send);
-		controller.registerComponent("totalField", total);
+		controller.registerComponent("totalDisplay", total);
 		controller.registerComponent("orderList", orderList);
+		controller.registerComponent("addPizzaButton", addPizza);
+		controller.registerComponent("sideButton", addSide);
+		controller.registerComponent("drinkButton", addDrink);
+		controller.resetView();
 		return rootView;
 	}
 }

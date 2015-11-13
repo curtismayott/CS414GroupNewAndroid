@@ -91,10 +91,18 @@ public class Order {
     }
 
     public void addPizza(Pizza pizza){
+		int highestItemID = -1;
         if(this.pizzas == null){
             this.pizzas = new ArrayList<>();
         }
         pizza.setStatus(PIZZA_STATUS.NEW);
+		for(Pizza p : pizzas){
+			if(p.getItemID() > highestItemID){
+				highestItemID = p.getItemID();
+			}
+		}
+		highestItemID++;
+		pizza.setItemID(highestItemID);
         this.pizzas.add(pizza);
     }
 
@@ -103,6 +111,15 @@ public class Order {
             pizzas.remove(pizza);
         }
     }
+
+	public void removePizza(int itemID){
+		for(Pizza p : pizzas){
+			if(p.getItemID() == itemID){
+				pizzas.remove(p);
+			}
+		}
+	}
+
     public void removeAllPizzas(){
         this.pizzas.clear();
     }

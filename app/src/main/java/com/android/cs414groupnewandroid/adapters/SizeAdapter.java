@@ -1,6 +1,7 @@
 package com.android.cs414groupnewandroid.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.cs414groupnewandroid.R;
-import com.android.cs414groupnewandroid.objects.OrderItem;
-import com.android.cs414groupnewandroid.objects.Pizza;
-import com.android.cs414groupnewandroid.objects.SideItem;
+import com.android.cs414groupnewandroid.objects.PizzaSize;
 
 import java.util.ArrayList;
 
@@ -21,22 +20,27 @@ import java.util.ArrayList;
 public class SizeAdapter extends BaseAdapter {
 	LayoutInflater inflater;
 	Context context;
-	ArrayList<OrderItem> orderItems;
+	ArrayList<PizzaSize> sizes;
+	ArrayList<Boolean> selected;
 
-	public SizeAdapter(Context context, ArrayList<OrderItem> orderItems){
+	public SizeAdapter(Context context, ArrayList<PizzaSize> sizes){
 		this.context = context;
-		this.orderItems = orderItems;
+		this.sizes = sizes;
 		inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		selected = new ArrayList<>();
+		for(int i = 0; i < sizes.size(); i++){
+			selected.add(false);
+		}
 	}
 
 	@Override
 	public int getCount() {
-		return orderItems.size();
+		return sizes.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return orderItems.get(position);
+		return sizes.get(position);
 	}
 
 	@Override
@@ -44,50 +48,49 @@ public class SizeAdapter extends BaseAdapter {
 		return position;
 	}
 
+	public void setSelected(int index, boolean isSelected){
+		selected.set(index, isSelected);
+		notifyDataSetChanged();
+	}
+
+	public boolean isSelected(int position){
+		return selected.get(position);
+	}
+
+	public int getSelected(){
+		for(int i = 0; i < selected.size(); i++){
+			if(selected.get(i)){
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if(convertView == null){
-			convertView = inflater.inflate(R.layout.row_order_list, parent, false);
+			convertView = inflater.inflate(R.layout.row_size, parent, false);
 			holder = new ViewHolder();
 			holder.container = (LinearLayout)convertView.findViewById(R.id.container);
 			holder.size = (TextView)convertView.findViewById(R.id.item_size);
-			holder.sauce = (TextView)convertView.findViewById(R.id.item_sauce);
-			holder.topping = (TextView)convertView.findViewById(R.id.item_topping);
-			holder.price = (TextView)convertView.findViewById(R.id.item_price);
 			convertView.setTag(holder);
 		}else{
 			holder = (ViewHolder)convertView.getTag();
 		}
 
-		OrderItem item = (OrderItem)getItem(position);
-		if(item instanceof SideItem){
-			holder.topping.setText(((SideItem) item).getName());
+		PizzaSize item = (PizzaSize)getItem(position);
+		holder.size.setText(item.getFullName());
+		if(isSelected(position)){
+			holder.container.setBackgroundColor(Color.BLUE);
 		}else{
-			holder.size.setText(((Pizza)item).getSize().toString());
-			holder.sauce.setText(((Pizza)item).getSauce().toString());
-			StringBuilder toppings = new StringBuilder();
-			toppings.setLength(0);
-			for(int i = 0; i < ((Pizza)item).getToppingList().size(); i++){
-				if(i != 0){
-					toppings.append("\n");
-				}
-				toppings.append(((Pizza) item).getToppingList().get(i).getShortName());
-			}
-			if(toppings.length() != 0){
-				holder.topping.setText(toppings.toString());
-			}
+			holder.container.setBackgroundColor(Color.WHITE);
 		}
-
-		holder.price.setText("$" + item.getPrice());
 		return convertView;
 	}
 
 	public class ViewHolder{
 		LinearLayout container;
 		TextView size;
-		TextView sauce;
-		TextView topping;
-		TextView price;
 	}
 }

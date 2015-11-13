@@ -7,6 +7,8 @@ public class OrderItem {
     double price;
     int orderID;
     PIZZA_STATUS status;
+	int itemID;
+
     public OrderItem(){
 
     }
@@ -55,4 +57,12 @@ public class OrderItem {
             this.status = PIZZA_STATUS.MAKELINE;
         }
     }
+
+	public void setItemID(int itemID){
+		this.itemID = itemID;
+	}
+
+	public int getItemID(){
+		return itemID;
+	}
 }

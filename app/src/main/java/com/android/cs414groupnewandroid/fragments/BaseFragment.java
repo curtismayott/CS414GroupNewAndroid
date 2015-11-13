@@ -15,13 +15,8 @@ import com.android.cs414groupnewandroid.objects.Order;
 public class BaseFragment extends Fragment {
 	public Order order;
 	MyOnClickListener controller;
-	public static final int UPDAATE = 1;
+	public static final int UPDATE = 1;
 	public static final int PASS_ID = 2;
-
-	public static BaseFragment newInstance() {
-		BaseFragment fragment = new BaseFragment();
-		return fragment;
-	}
 
 	public BaseFragment() {
 	}
@@ -29,12 +24,6 @@ public class BaseFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-							 Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_base, container, false);
 	}
 
 	public Handler handler = new Handler() {

@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.android.cs414groupnewandroid.R;
+import com.android.cs414groupnewandroid.controllers.CustomerListener;
 import com.android.cs414groupnewandroid.controllers.MyOnClickListener;
 
 public class CustomerFragment extends BaseFragment {
@@ -29,7 +30,7 @@ public class CustomerFragment extends BaseFragment {
 
 		save.setOnClickListener(controller);
 		back.setOnClickListener(controller);
-		orderTypeSpinner.setOnItemClickListener(controller);
+		orderTypeSpinner.setOnItemSelectedListener((CustomerListener)controller);
 
 		controller.registerComponent("save", save);
 		controller.registerComponent("back", back);
