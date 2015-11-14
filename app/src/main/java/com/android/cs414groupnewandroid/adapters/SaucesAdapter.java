@@ -66,6 +66,24 @@ public class SaucesAdapter extends BaseAdapter {
 		return -1;
 	}
 
+	public void unselectAll(){
+		for(int i = 0; i < selected.size(); i++){
+			selected.set(i, false);
+		}
+		notifyDataSetChanged();
+	}
+
+	public void setSelectedSauce(Sauce sauce){
+		unselectAll();
+		for(int i = 0; i < sauces.size(); i++){
+			if(sauces.get(i).equals(sauce)){
+				setSelected(i, true);
+				break;
+			}
+		}
+		notifyDataSetChanged();
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;

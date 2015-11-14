@@ -1,5 +1,7 @@
 package com.android.cs414groupnewandroid.objects;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
@@ -131,9 +133,40 @@ public class Order {
         this.pizzas.addAll(pizzas);
     }
 
-    public void updatePizza(int index, Pizza pizza){
-        pizzas.set(index, pizza);
+    public void updatePizza(int itemID, Pizza pizza){
+        for(int i = 0; i < pizzas.size(); i++){
+			if(pizzas.get(i).getItemID() == itemID){
+				pizzas.set(i, pizza);
+			}
+		}
     }
+
+	public void savePizza(int itemID, Pizza pizza){
+		if(pizzaExists(itemID)){
+			updatePizza(itemID, pizza);
+		}else{
+			addPizza(pizza);
+		}
+	}
+
+	public boolean pizzaExists(int itemID){
+		for(int i = 0; i < pizzas.size(); i++){
+			if(pizzas.get(i).getItemID() == itemID){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Pizza getPizzaByID(int itemID){
+		for(Pizza p : pizzas){
+			if(p.getItemID() == itemID){
+				Log.e("Order", "PizzaID Found");
+				return p;
+			}
+		}
+		return null;
+	}
 
     public void sendPizzasToMakeLine(){
         for(Pizza pizza : pizzas){

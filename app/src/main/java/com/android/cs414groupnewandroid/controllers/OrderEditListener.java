@@ -17,6 +17,8 @@ import com.android.cs414groupnewandroid.adapters.SizeAdapter;
 import com.android.cs414groupnewandroid.adapters.ToppingAdapter;
 import com.android.cs414groupnewandroid.objects.*;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,6 +27,7 @@ import java.util.HashMap;
  */
 public class OrderEditListener extends MyOnClickListener implements AdapterView.OnItemClickListener {
 	Order order;
+	Pizza activePizza;
 
 	public OrderEditListener(Context context) {
 		super(context);
@@ -34,6 +37,32 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 	public void setOrderID(int orderID) {
 		order = model.getOrder(orderID);
 		this.orderID = orderID;
+	}
+
+	public void setPizza(int pizzaID){
+		activePizza = order.getPizzaByID(pizzaID);
+	}
+
+	public void clearPizza(){
+		activePizza = null;
+	}
+
+	public void setPizzaScreen(){
+		((ToppingAdapter)((ListView) components.get("toppingsList")).getAdapter()).setSelectedToppings(getSelectedToppings(activePizza));
+		((SizeAdapter)((ListView) components.get("sizesList")).getAdapter()).setSelectedSize(activePizza.getSize());
+		((SaucesAdapter)((ListView) components.get("saucesList")).getAdapter()).setSelectedSauce(activePizza.getSauce());
+	}
+
+	public ArrayList<Integer> getSelectedToppings(Pizza p){
+		ArrayList<Integer> toppings = new ArrayList<>();
+		for(int i = 0; i < model.getCatalog().getToppings().size(); i++){
+			for(Topping pt : p.getToppingList()){
+				if(model.getCatalog().getToppings().get(i).equals(pt)){
+					toppings.add(i);
+				}
+			}
+		}
+		return toppings;
 	}
 
 	@Override
@@ -49,21 +78,21 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			}
 			// add new pizza to order
 			pizza.setToppingList(toppings);
-			pizza.setSauce(model.getCatalog().getSauces().get(((SizeAdapter) ((ListView) components.get("saucesList")).getAdapter()).getSelected()));
+			pizza.setSauce(model.getCatalog().getSauces().get(((SaucesAdapter) ((ListView) components.get("saucesList")).getAdapter()).getSelected()));
 			pizza.setSize(model.getCatalog().getSizes().get(((SizeAdapter)((ListView)components.get("sizesList")).getAdapter()).getSelected()));
 			pizza.calculatePrice();
-
-			if (((Button) components.get("addPizzaButton")).getText().equals("Add")) {
-				order.addPizza(pizza);
-			} else {
-				// update pizza
-				// TODO
-				/*int selectedIndex = ((ListView) components.get("pizzaList")).getSelectedIndex();
-				order.updatePizza(selectedIndex, pizza);*/
+			// add/update pizza
+			// TODO
+			if(activePizza == null){
+				order.savePizza(-1, pizza);
+			}else {
+				order.savePizza(activePizza.getItemID(), pizza);
 			}
 			resetView();
+			clearPizza();
 			clearPizzaSelections();
-			((EditText) components.get("totalDisplay")).setText(model.TOTAL_TEXT + order.getOrderTotal());
+			((TextView) components.get("totalDisplay")).setText("$" + Double.toString(order.getOrderTotal()));
+			MainActivity.changeScreen(MainActivity.ORDER_EDIT);
 		} else if(v.equals(components.get("cancelPizza"))){
 			MainActivity.changeScreen(MainActivity.ORDER_EDIT);
 		} else if (v.equals(components.get("cancelItem"))) {
@@ -131,6 +160,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			MainActivity.activateWindow(MainActivity.ORDER_EDIT, MainActivity.ORDER_LIST);*/
 		} else if(v.equals(components.get("addPizzaButton")))
 		{
+			clearPizza();
 			MainActivity.changeScreen(MainActivity.PIZZA);
 		} else if (v.equals(components.get("sideButton")))
 		{
@@ -173,42 +203,23 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 	}
 
 	public void clearPizzaSelections() {
-		/*((ListView) components.get("pizzaToppingsList")).clearSelection();
-		((ListView) components.get("pizzaSizesList")).clearSelection();
-		((ListView) components.get("pizzaSaucesList")).clearSelection();
-		//((ListView)components.get("pizzaList")).clearSelection();
-		((Button) components.get("addPizzaButton")).setText("Add");*/
+		if(activePizza != null) {
+			((ToppingAdapter) ((ListView) components.get("toppingsList")).getAdapter()).unselectAll();
+			((SizeAdapter) ((ListView) components.get("sizesList")).getAdapter()).unselectAll();
+			((SaucesAdapter) ((ListView) components.get("saucesList")).getAdapter()).unselectAll();
+		}
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		if(parent.equals(components.get("orderList"))){
-			/*((Button) components.get("addPizzaButton")).setText("Update");
-			String buttonText = "";
-			Pizza pizza = null;
-			for (Pizza p : order.getPizzas()) {
-				if (p.toString().equals(buttonText)) {
-					pizza = p;
-				}
+			if(parent.getAdapter().getItem(position) instanceof Pizza){
+				setPizza(((Pizza) parent.getAdapter().getItem(position)).getItemID());
+				Log.e("OrderEditListener", "PizzaID: " + activePizza.getItemID());
+				MainActivity.changeScreen(MainActivity.PIZZA);
+			}else{
+				// is drink or side
 			}
-			if (pizza != null) {
-				((ListView) components.get("pizzaSaucesList")).setSelectedValue(pizza.getSauce(), true);
-				((ListView) components.get("pizzaSizesList")).setSelectedValue(pizza.getSize(), true);
-
-				ArrayList<Integer> indicies = new ArrayList<>();
-				for (Topping t : pizza.getToppingList()) {
-					for (int i = 0; i < model.getCatalog().getToppings().size(); i++) {
-						if (model.getCatalog().getToppings().get(i).equals(t)) {
-							indicies.add(i);
-						}
-					}
-				}
-				int[] tmpIndicies = new int[indicies.size()];
-				for (int i = 0; i < indicies.size(); i++) {
-					tmpIndicies[i] = indicies.get(i);
-				}
-				((ListView) components.get("pizzaToppingsList")).setSelectedIndices(tmpIndicies);
-			}*/
 		} else if (parent.equals(components.get("sizesList"))) {
 			for(int i = 0; i < parent.getAdapter().getCount(); i++){
 				((SizeAdapter)parent.getAdapter()).setSelected(i, false);
@@ -246,11 +257,14 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			ToppingAdapter toppingAdapter = new ToppingAdapter(context, model.getCatalog().getToppings());
 			((ListView) components.get("toppingsList")).setAdapter(toppingAdapter);
 		}
+		if(activePizza != null){
+			setPizzaScreen();
+		}
 		if(components.get("totalDisplay") != null) {
 			if (order != null) {
 				if (order.getOrderItems().size() != 0) {
 					//((ListView) components.get("pizzaList")).setListData(order.getOrderItems().toArray());
-					((TextView) components.get("totalDisplay")).setText(model.TOTAL_TEXT + order.getOrderTotal());
+					((TextView) components.get("totalDisplay")).setText("$" + Double.toString(order.getOrderTotal()));
 				} else {
 					//((ListView) components.get("pizzaList")).setListData(new String[0]);
 					((TextView) components.get("totalDisplay")).setText("");

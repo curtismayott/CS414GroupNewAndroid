@@ -62,6 +62,21 @@ public class ToppingAdapter extends BaseAdapter {
 		return selected;
 	}
 
+	public void unselectAll(){
+		for(int i = 0; i < selected.size(); i++){
+			selected.set(i, false);
+		}
+		notifyDataSetChanged();
+	}
+
+	public void setSelectedToppings(ArrayList<Integer> indicies){
+		unselectAll();
+		for(Integer i : indicies){
+			setSelected(i, true);
+		}
+		notifyDataSetChanged();
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;

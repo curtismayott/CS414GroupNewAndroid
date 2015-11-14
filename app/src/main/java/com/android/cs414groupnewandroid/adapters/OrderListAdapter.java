@@ -70,7 +70,7 @@ public class OrderListAdapter extends BaseAdapter {
 				if(i != 0){
 					toppings.append("\n");
 				}
-				toppings.append(((Pizza) item).getToppingList().get(i).getShortName());
+				toppings.append(((Pizza) item).getToppingList().get(i).getFullName());
 			}
 			if(toppings.length() != 0){
 				holder.topping.setText(toppings.toString());

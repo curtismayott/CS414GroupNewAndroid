@@ -66,6 +66,24 @@ public class SizeAdapter extends BaseAdapter {
 		return -1;
 	}
 
+	public void unselectAll(){
+		for(int i = 0; i < selected.size(); i++){
+			selected.set(i, false);
+		}
+		notifyDataSetChanged();
+	}
+
+	public void setSelectedSize(PizzaSize size){
+		unselectAll();
+		for(int i = 0; i < sizes.size(); i++){
+			if(sizes.get(i).equals(size)){
+				setSelected(i, true);
+				break;
+			}
+		}
+		notifyDataSetChanged();
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
