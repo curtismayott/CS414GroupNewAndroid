@@ -1,15 +1,19 @@
 package com.android.cs414groupnewandroid.controllers;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.cs414groupnewandroid.R;
 import com.android.cs414groupnewandroid.activities.MainActivity;
 import com.android.cs414groupnewandroid.adapters.OrderListAdapter;
 import com.android.cs414groupnewandroid.adapters.SaucesAdapter;
@@ -25,9 +29,13 @@ import java.util.HashMap;
 /**
  * Created by darkbobo on 10/14/15.
  */
-public class OrderEditListener extends MyOnClickListener implements AdapterView.OnItemClickListener {
+public class OrderEditListener extends MyOnClickListener implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 	Order order;
 	Pizza activePizza;
+	MyDialog drinkDialog;
+	MyDialog sideDialog;
+	MyDialog cancelItemDialog;
+	MyDialog cancelOrderDialog;
 
 	public OrderEditListener(Context context) {
 		super(context);
@@ -124,20 +132,32 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		} else if (v.equals(components.get("clearSelections"))) {
 			clearPizzaSelections();
 		} else if (v.equals(components.get("cancelOrder"))) {
-			clearPizzaSelections();
-			// clear pizzaList
-			order.removeAllPizzas();
-			if (model.getOrders().contains(order)) {
-				model.getOrders().remove(order);
-			}
-			order = null;
-			((EditText) components.get("totalDisplay")).setText(model.TOTAL_TEXT);
-		} else if (v.equals(components.get("quitButton"))) {
-			for (OrderItem o : order.getOrderItems()) {
-				if (o.getStatus() == PIZZA_STATUS.NEW) {
-					o.setStatus(PIZZA_STATUS.MAKELINE);
+			cancelOrderDialog = new MyDialog(context);
+			cancelOrderDialog.init();
+			cancelOrderDialog.setContentView(R.layout.dialog_cancel);
+			TextView label = (TextView)cancelOrderDialog.findViewById(R.id.label);
+			label.setText("Cancel Order");
+			Button cancel = (Button)cancelOrderDialog.findViewById(R.id.cancel_button);
+			cancel.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					cancelOrderDialog.dismiss();
 				}
-			}
+			});
+			Button confirm = (Button)cancelOrderDialog.findViewById(R.id.confirm_button);
+			confirm.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					order = null;
+					activePizza = null;
+					clearPizzaSelections();
+					((TextView) components.get("totalDisplay")).setText("");
+					cancelOrderDialog.dismiss();
+					MainActivity.changeScreen(MainActivity.MAIN_MENU);
+				}
+			});
+			cancelOrderDialog.show();
+
 			/*Object[] exitOptions = {"Exit",
 					"Cancel"};
 			int n = JOptionPane.showOptionDialog(view,
@@ -162,35 +182,46 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		{
 			clearPizza();
 			MainActivity.changeScreen(MainActivity.PIZZA);
-		} else if (v.equals(components.get("sideButton")))
+		} else if (v.equals(components.get("sideButton"))) {
+			sideDialog = new MyDialog(context);
+			sideDialog.init();
+			sideDialog.setContentView(R.layout.dialog_item);
+			LinearLayout container = (LinearLayout)sideDialog.findViewById(R.id.items_list);
+			for(final Side s : model.getCatalog().getSides()){
+				Button button = new Button(context);
+				button.setText(s.toString());
+				button.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						order.addSide(s);
+						sideDialog.dismiss();
+						resetView();
+					}
+				});
+				container.addView(button);
+			}
+			sideDialog.show();
+		} else if (v.equals(components.get("drinkButton")))
 		{
-			/*ArrayList<Side> sides = model.getCatalog().getSides();
-			int sideSelection = JOptionPane.showOptionDialog(view,
-					"Select a Side",
-					"Sides",
-					JOptionPane.YES_NO_CANCEL_OPTION,
-					JOptionPane.QUESTION_MESSAGE,
-					null,     //do not use a custom Icon
-					sides.toArray(),  //the titles of buttons
-					sides.toArray()[0]); //default button title*//*
-			order.addSide(sides.get(sideSelection));
-			resetView();*/
-		} else if (v.equals("drinkButton"))
-
-		{
-			/*ArrayList<Drink> drinks = model.getCatalog().getDrinks();
-			int drinkSelection = JOptionPane.showOptionDialog(view,
-					"Select a Drink",
-					"Drinks",
-					JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE,
-					null,     //do not use a custom Icon
-					drinks.toArray(),  //the titles of buttons
-					drinks.toArray()[0]); //default button title*//*
-			order.addSide(drinks.get(drinkSelection));
-			resetView();*/
+			drinkDialog = new MyDialog(context);
+			drinkDialog.init();
+			drinkDialog.setContentView(R.layout.dialog_item);
+			LinearLayout container = (LinearLayout)drinkDialog.findViewById(R.id.items_list);
+			for(final Drink d : model.getCatalog().getDrinks()){
+				Button button = new Button(context);
+				button.setText(d.toString());
+				button.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						order.addSide(d);
+						drinkDialog.dismiss();
+						resetView();
+					}
+				});
+				container.addView(button);
+			}
+			drinkDialog.show();
 		} else if (v.equals(components.get("sendOrder")))
-
 		{
 			order.sendPizzasToMakeLine();
 			order.sendSidesToMakeLine();
@@ -199,7 +230,6 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			MainActivity.changeScreen(MainActivity.MAIN_MENU);
 			// TODO : send order to server
 		}
-
 	}
 
 	public void clearPizzaSelections() {
@@ -241,9 +271,13 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 
 	public void resetView() {
 		Log.e("OrderEditListener", "" + orderID);
-		if(order.getOrderItems().size() > 0) {
-			OrderListAdapter adapter = new OrderListAdapter(context, order.getOrderItems());
-			((ListView) components.get("orderList")).setAdapter(adapter);
+		if(components.get("orderList") != null) {
+			if (order.getOrderItems().size() > 0) {
+				OrderListAdapter adapter = new OrderListAdapter(context, order.getOrderItems());
+				((ListView) components.get("orderList")).setAdapter(adapter);
+			} else {
+				((ListView) components.get("orderList")).setAdapter(null);
+			}
 		}
 		if(components.get("saucesList") != null) {
 			SaucesAdapter saucesAdapter = new SaucesAdapter(context, model.getCatalog().getSauces());
@@ -271,5 +305,38 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+		cancelItemDialog = new MyDialog(context);
+		cancelItemDialog.init();
+		cancelItemDialog.setContentView(R.layout.dialog_cancel);
+		TextView label = (TextView)cancelItemDialog.findViewById(R.id.label);
+		Button cancel = (Button)cancelItemDialog.findViewById(R.id.cancel_button);
+		Button confirm = (Button)cancelItemDialog.findViewById(R.id.confirm_button);
+		label.setText("Cancel Item:\n" + parent.getAdapter().getItem(position).toString());
+		cancel.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				cancelItemDialog.dismiss();
+			}
+		});
+		final AdapterView<?> tParent = parent;
+		final int tPosition = position;
+		confirm.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(tParent.getAdapter().getItem(tPosition) instanceof Pizza){
+					order.removePizza((Pizza)tParent.getAdapter().getItem(tPosition));
+				}else {
+					order.removeItem((OrderItem) tParent.getAdapter().getItem(tPosition));
+				}
+				resetView();
+				cancelItemDialog.dismiss();
+			}
+		});
+		cancelItemDialog.show();
+		return true;
 	}
 }
