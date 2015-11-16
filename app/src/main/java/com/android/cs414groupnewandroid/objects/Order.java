@@ -13,7 +13,7 @@ TODO functionality of updating order : have totalPaid, when user edits pizza, to
 */
 
 
-public class Order {
+public class Order implements OrderInterface {
     private int orderID;
     private Person customer;
     boolean isPaidFor;
@@ -259,4 +259,9 @@ public class Order {
     public ORDER_TYPE getOrderType(){ return this.orderType; }
 
     public void setOrderType(ORDER_TYPE orderType){ this.orderType = orderType; }
+
+	@Override
+	public void sendOrder() {
+
+	}
 }
