@@ -261,7 +261,7 @@ public class Order implements OrderInterface {
     public void setOrderType(ORDER_TYPE orderType){ this.orderType = orderType; }
 
 	@Override
-	public void sendOrder() {
-
+	public void sendOrder(Order o) {
+		
 	}
 }

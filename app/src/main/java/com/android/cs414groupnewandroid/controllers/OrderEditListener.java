@@ -226,8 +226,11 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			order.sendPizzasToMakeLine();
 			order.sendSidesToMakeLine();
 			model.updateOrder(orderID, order);
-			order = null;
 			MainActivity.changeScreen(MainActivity.MAIN_MENU);
+			Log.e("OrderEditListener", order.toString());
+			PizzaServer.getInstance().setOrder(order);
+			order.sendOrder(order);
+			order = null;
 			// TODO : send order to server
 		}
 	}

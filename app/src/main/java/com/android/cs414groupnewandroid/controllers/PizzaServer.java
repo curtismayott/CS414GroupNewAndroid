@@ -1,9 +1,14 @@
 package com.android.cs414groupnewandroid.controllers;
 
+import android.util.Log;
+
 import com.android.cs414groupnewandroid.objects.Order;
+import com.android.cs414groupnewandroid.objects.OrderInterface;
 import com.android.cs414groupnewandroid.objects.Person;
 
+import lipermi.exception.LipeRMIException;
 import lipermi.handler.CallHandler;
+import lipermi.net.Client;
 import lipermi.net.Server;
 
 /**
@@ -12,14 +17,15 @@ import lipermi.net.Server;
 public class PizzaServer extends Server {
 	private static PizzaServer server;
 	private Person person;
-	private Order order;
+	private OrderInterface order;
+	CallHandler handler;
 
 	private PizzaServer(){
-		CallHandler handler = new CallHandler();
+		handler = new CallHandler();
 	}
 
 	public static PizzaServer getInstance(){
-		if(server != null){
+		if(server == null){
 			server = new PizzaServer();
 		}
 		return server;
@@ -30,6 +36,19 @@ public class PizzaServer extends Server {
 	}
 
 	public void setOrder(Order o){
+		Log.e("PizzaServer", "setOrder: " + o.toString());
 		this.order = o;
+		try {
+			handler.registerGlobal(OrderInterface.class, order);
+			String url = "localhost";
+			int port = 9587;
+			server.bind(port, handler);
+			Client client = new Client(url, port, handler);
+			OrderInterface remoteObject;
+			remoteObject = (OrderInterface) client.getGlobal(OrderInterface.class);
+			remoteObject.sendOrder(o);
+		} catch (Exception e) {
+			Log.e("PizzaServer", "error");
+		}
 	}
 }
