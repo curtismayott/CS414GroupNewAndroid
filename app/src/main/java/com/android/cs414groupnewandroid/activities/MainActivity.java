@@ -9,7 +9,6 @@ import com.android.cs414groupnewandroid.controllers.CustomerListener;
 import com.android.cs414groupnewandroid.controllers.MainMenuListener;
 import com.android.cs414groupnewandroid.controllers.MyOnClickListener;
 import com.android.cs414groupnewandroid.controllers.OrderEditListener;
-import com.android.cs414groupnewandroid.controllers.PizzaServer;
 import com.android.cs414groupnewandroid.fragments.*;
 import com.android.cs414groupnewandroid.objects.Register;
 
@@ -52,7 +51,6 @@ public class MainActivity extends FragmentActivity {
 
 		manager = getSupportFragmentManager();
 		manager.beginTransaction().add(R.id.container, fragments.get(MAIN_MENU)).commit();
-		PizzaServer.getInstance();
 	}
 
 	public static void changeScreen(String newView){

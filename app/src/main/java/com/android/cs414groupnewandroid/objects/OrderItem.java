@@ -8,7 +8,6 @@ public class OrderItem {
     int orderID;
     PIZZA_STATUS status;
 	int itemID;
-	Special special;
 
     public OrderItem(){
 
@@ -65,9 +64,5 @@ public class OrderItem {
 
 	public int getItemID(){
 		return itemID;
-	}
-
-	public void calculatePrice(){
-
 	}
 }

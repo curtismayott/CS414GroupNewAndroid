@@ -80,16 +80,11 @@ public class Pizza extends OrderItem {
         this.status = PIZZA_STATUS.COMPLETED;
     }
 
-	@Override
     public void calculatePrice(){
         // should abstract out so pricing calculations are dynamic
         double basePrice = 0;
-		if(special == null) {
-			basePrice += size.getPrice();
-			basePrice += toppings.size();
-		}else{
-			basePrice += special.getDiscountedPrice();
-		}
+        basePrice += size.getPrice();
+        basePrice += toppings.size();
         setPrice(basePrice);
     }
 
