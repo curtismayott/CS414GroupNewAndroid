@@ -1,14 +1,10 @@
 package com.android.cs414groupnewandroid.controllers;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,9 +15,13 @@ import com.android.cs414groupnewandroid.adapters.OrderListAdapter;
 import com.android.cs414groupnewandroid.adapters.SaucesAdapter;
 import com.android.cs414groupnewandroid.adapters.SizeAdapter;
 import com.android.cs414groupnewandroid.adapters.ToppingAdapter;
-import com.android.cs414groupnewandroid.objects.*;
-
-import org.w3c.dom.Text;
+import com.android.cs414groupnewandroid.objects.Drink;
+import com.android.cs414groupnewandroid.objects.Order;
+import com.android.cs414groupnewandroid.objects.OrderItem;
+import com.android.cs414groupnewandroid.objects.Pizza;
+import com.android.cs414groupnewandroid.objects.Register;
+import com.android.cs414groupnewandroid.objects.Side;
+import com.android.cs414groupnewandroid.objects.Topping;
 
 import java.util.ArrayList;
 import java.util.HashMap;
