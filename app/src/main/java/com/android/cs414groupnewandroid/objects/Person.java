@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by clark on 10/7/15.
  */
-public class Person {
+public class Person implements CustomerInterface {
     private String name;
     private ArrayList<Address> addresses;
     private ArrayList<Phone> phoneNumbers;
@@ -59,4 +59,18 @@ public class Person {
         this.addresses = addresses;
     }
 
+	@Override
+	public Person getCustomer() {
+		return null;
+	}
+
+	@Override
+	public void editCustomer(Person person) {
+
+	}
+
+	@Override
+	public void addCustomer(Person person) {
+
+	}
 }
