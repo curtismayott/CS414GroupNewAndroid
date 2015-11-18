@@ -17,7 +17,6 @@ import com.android.cs414groupnewandroid.fragments.MainActivityFragment;
 import com.android.cs414groupnewandroid.fragments.OrderFragment;
 import com.android.cs414groupnewandroid.fragments.PizzaFragment;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import lipermi.handler.CallHandler;
@@ -43,14 +42,20 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 
 		//create connection on app creation
-		callHandler = new CallHandler();
-		Client client = null;
-		try {
-			client = new Client(serverIP, PORT_NUM, callHandler);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		serverInterface = (ServerInterface) client.getGlobal(ServerInterface.class);
+		Thread thread = new Thread() {
+			@Override
+			public void run() {
+				try {
+					callHandler = new CallHandler();
+					Client client = null;
+					client = new Client(serverIP, PORT_NUM, callHandler);
+					serverInterface = (ServerInterface) client.getGlobal(ServerInterface.class);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		thread.start();
 
 
 		setContentView(R.layout.activity_main);
