@@ -9,8 +9,8 @@ import com.android.cs414groupnewandroid.controllers.CustomerListener;
 import com.android.cs414groupnewandroid.controllers.MainMenuListener;
 import com.android.cs414groupnewandroid.controllers.MyOnClickListener;
 import com.android.cs414groupnewandroid.controllers.OrderEditListener;
+import com.android.cs414groupnewandroid.controllers.PizzaClient;
 import com.android.cs414groupnewandroid.fragments.*;
-import com.android.cs414groupnewandroid.objects.Register;
 
 import java.util.HashMap;
 
@@ -44,9 +44,9 @@ public class MainActivity extends FragmentActivity {
 			fragments.get(key).setController(listeners.get(key));
 		}
 
-		Register model = new Register();
+		PizzaClient pc = new PizzaClient();
 		for(String key : listeners.keySet()){
-			listeners.get(key).addModel(model);
+			listeners.get(key).addClient(pc);
 		}
 
 		manager = getSupportFragmentManager();
