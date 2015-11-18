@@ -24,9 +24,9 @@ import lipermi.net.Client;
 
 public class MainActivity extends FragmentActivity {
 
-	private final String serverIP = "192.168.1.105";
 	private final int PORT_NUM = 7777;
 
+	private final String serverIP = "192.168.1.105";
 	private static HashMap<String,BaseFragment> fragments;
 	private static HashMap<String,MyOnClickListener> listeners;
 	private static FragmentManager manager;
@@ -42,7 +42,7 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 
 		//create connection on app creation
-		Thread thread = new Thread() {
+		Thread connectionThread = new Thread() {
 			@Override
 			public void run() {
 				try {
@@ -55,8 +55,7 @@ public class MainActivity extends FragmentActivity {
 				}
 			}
 		};
-		thread.start();
-
+		connectionThread.start();
 
 		setContentView(R.layout.activity_main);
 
