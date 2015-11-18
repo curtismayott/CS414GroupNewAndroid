@@ -24,7 +24,7 @@ public interface ServerInterface{
 
     public Order getOrder(int OrderID);
 
-    public ArrayList<Topping> getMenuToppings();
+    public ArrayList<Topping> getToppings();
 
     public ArrayList<Sauce> getSauces();
 

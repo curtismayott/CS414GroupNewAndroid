@@ -4,17 +4,30 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+
 import com.android.cs414groupnewandroid.R;
 import com.android.cs414groupnewandroid.controllers.CustomerListener;
 import com.android.cs414groupnewandroid.controllers.MainMenuListener;
 import com.android.cs414groupnewandroid.controllers.MyOnClickListener;
 import com.android.cs414groupnewandroid.controllers.OrderEditListener;
-import com.android.cs414groupnewandroid.fragments.*;
-import com.android.cs414groupnewandroid.objects.Register;
+import com.android.cs414groupnewandroid.controllers.ServerInterface;
+import com.android.cs414groupnewandroid.fragments.BaseFragment;
+import com.android.cs414groupnewandroid.fragments.CustomerFragment;
+import com.android.cs414groupnewandroid.fragments.MainActivityFragment;
+import com.android.cs414groupnewandroid.fragments.OrderFragment;
+import com.android.cs414groupnewandroid.fragments.PizzaFragment;
 
+import java.io.IOException;
 import java.util.HashMap;
 
+import lipermi.handler.CallHandler;
+import lipermi.net.Client;
+
 public class MainActivity extends FragmentActivity {
+
+	private final String serverIP = "192.168.1.105";
+	private final int PORT_NUM = 7777;
+
 	private static HashMap<String,BaseFragment> fragments;
 	private static HashMap<String,MyOnClickListener> listeners;
 	private static FragmentManager manager;
@@ -22,10 +35,24 @@ public class MainActivity extends FragmentActivity {
 	public static final String PIZZA = "pizza";
 	public static final String ORDER_EDIT = "order_edit";
 	public static final String MAIN_MENU = "main_menu";
+	private ServerInterface serverInterface;
+	private CallHandler callHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		//create connection on app creation
+		callHandler = new CallHandler();
+		Client client = null;
+		try {
+			client = new Client(serverIP, PORT_NUM, callHandler);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		serverInterface = (ServerInterface) client.getGlobal(ServerInterface.class);
+
+
 		setContentView(R.layout.activity_main);
 
 		fragments = new HashMap<>();
@@ -44,9 +71,8 @@ public class MainActivity extends FragmentActivity {
 			fragments.get(key).setController(listeners.get(key));
 		}
 
-		Register model = new Register();
 		for(String key : listeners.keySet()){
-			listeners.get(key).addModel(model);
+			listeners.get(key).addInterface(serverInterface);
 		}
 
 		manager = getSupportFragmentManager();
