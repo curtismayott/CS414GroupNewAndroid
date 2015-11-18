@@ -1,4 +1,3 @@
-/build
-/.idea
-\.idea
+build
+.idea
 local.properties
