@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.android.cs414groupnewandroid.objects.Register;
+
 import java.util.HashMap;
 
 /**
@@ -11,18 +13,26 @@ import java.util.HashMap;
  */
 public class MyOnClickListener implements View.OnClickListener, AdapterView.OnItemClickListener {
     public int orderID;
-    ServerInterface model;
+    Register model;
+    public PizzaClient pc;
     HashMap<String, View> components;
 	Context context;
     View view;
 
 	public MyOnClickListener(Context context){
 		this.context = context;
+        model = new Register();
 	}
 
     public void setOrderID(int orderID){
         this.orderID = orderID;
     }
+
+
+    public void addClient(PizzaClient pc){
+        this.pc = pc;
+    }
+
 
     public void addView(View view){
         this.view = view;
@@ -51,7 +61,7 @@ public class MyOnClickListener implements View.OnClickListener, AdapterView.OnIt
 
     }
 
-    public void addInterface(ServerInterface model) {
+    public void addModel(Register model) {
         this.model = model;
     }
 }

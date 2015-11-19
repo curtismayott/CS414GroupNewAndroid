@@ -31,6 +31,7 @@ public class CustomerListener extends MyOnClickListener implements AdapterView.O
 
     @Override
     public void onClick(View v) {
+        ServerInterface si;
         if((((Button)components.get("back"))).equals(v)) {
             clearEditTextFields();
             MainActivity.changeScreen(MainActivity.MAIN_MENU);
@@ -49,8 +50,8 @@ public class CustomerListener extends MyOnClickListener implements AdapterView.O
             if (order == null) {
                 order = new Order();
                 order.setCustomer(person);
-
-               // orderID = si.addOrder(order);
+                si = pc.createConnection();
+                orderID = si.addOrder(order);
             } else {
                 System.out.println("CustomerListener OrderID about to send: " + order.getOrderID());
                 order.setCustomer(person);
@@ -68,6 +69,7 @@ public class CustomerListener extends MyOnClickListener implements AdapterView.O
             MainActivity.changeScreen(MainActivity.ORDER_EDIT);
             orderID = -1;
             order = null;
+            pc.closeAndOpenClient();
         }
     }
 
@@ -82,8 +84,9 @@ public class CustomerListener extends MyOnClickListener implements AdapterView.O
 
     @Override
     public void setOrderID(int orderID){
+        ServerInterface si = pc.createConnection();
         if(orderID >= 0) {
-            //order = si.getOrder(orderID);
+            order = si.getOrder(orderID);
             this.orderID = orderID;
             System.out.println("CustomerListener OrderID: " + order.getOrderID());
             ((EditText) components.get("phoneEditText")).setText(order.getCustomer().getPhoneNumbers().get(0).getNumber());
@@ -109,6 +112,7 @@ public class CustomerListener extends MyOnClickListener implements AdapterView.O
             clearEditTextFields();
         }
         components.get("phoneEditText").requestFocus();
+        pc.closeAndOpenClient();
     }
 
 	@Override

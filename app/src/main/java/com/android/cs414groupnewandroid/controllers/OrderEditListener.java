@@ -19,6 +19,7 @@ import com.android.cs414groupnewandroid.objects.Drink;
 import com.android.cs414groupnewandroid.objects.Order;
 import com.android.cs414groupnewandroid.objects.OrderItem;
 import com.android.cs414groupnewandroid.objects.Pizza;
+import com.android.cs414groupnewandroid.objects.Register;
 import com.android.cs414groupnewandroid.objects.Side;
 import com.android.cs414groupnewandroid.objects.Topping;
 
@@ -62,9 +63,9 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 
 	public ArrayList<Integer> getSelectedToppings(Pizza p){
 		ArrayList<Integer> toppings = new ArrayList<>();
-		for(int i = 0; i < model.getToppings().size(); i++){
+		for(int i = 0; i < model.getCatalog().getToppings().size(); i++){
 			for(Topping pt : p.getToppingList()){
-				if(model.getToppings().get(i).equals(pt)){
+				if(model.getCatalog().getToppings().get(i).equals(pt)){
 					toppings.add(i);
 				}
 			}
@@ -80,13 +81,13 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			ArrayList<Topping> toppings = new ArrayList<>();
 			for (int i = 0; i < selectedToppings.size(); i++) {
 				if(selectedToppings.get(i)){
-					toppings.add(model.getToppings().get(i));
+					toppings.add(model.getCatalog().getToppings().get(i));
 				}
 			}
 			// add new pizza to order
 			pizza.setToppingList(toppings);
-			pizza.setSauce(model.getSauces().get(((SaucesAdapter) ((ListView) components.get("saucesList")).getAdapter()).getSelected()));
-			pizza.setSize(model.getSizes().get(((SizeAdapter)((ListView)components.get("sizesList")).getAdapter()).getSelected()));
+			pizza.setSauce(model.getCatalog().getSauces().get(((SaucesAdapter) ((ListView) components.get("saucesList")).getAdapter()).getSelected()));
+			pizza.setSize(model.getCatalog().getSizes().get(((SizeAdapter)((ListView)components.get("sizesList")).getAdapter()).getSelected()));
 			pizza.calculatePrice();
 			// add/update pizza
 			// TODO
@@ -186,7 +187,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			sideDialog.init();
 			sideDialog.setContentView(R.layout.dialog_item);
 			LinearLayout container = (LinearLayout)sideDialog.findViewById(R.id.items_list);
-			for(final Side s : model.getSides()){
+			for(final Side s : model.getCatalog().getSides()){
 				Button button = new Button(context);
 				button.setText(s.toString());
 				button.setOnClickListener(new View.OnClickListener() {
@@ -206,7 +207,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			drinkDialog.init();
 			drinkDialog.setContentView(R.layout.dialog_item);
 			LinearLayout container = (LinearLayout)drinkDialog.findViewById(R.id.items_list);
-			for(final Drink d : model.getDrinks()){
+			for(final Drink d : model.getCatalog().getDrinks()){
 				Button button = new Button(context);
 				button.setText(d.toString());
 				button.setOnClickListener(new View.OnClickListener() {
@@ -279,15 +280,15 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			}
 		}
 		if(components.get("saucesList") != null) {
-			SaucesAdapter saucesAdapter = new SaucesAdapter(context, model.getSauces());
+			SaucesAdapter saucesAdapter = new SaucesAdapter(context, model.getCatalog().getSauces());
 			((ListView) components.get("saucesList")).setAdapter(saucesAdapter);
 		}
 		if(components.get("sizesList") != null) {
-			SizeAdapter sizeAdapter = new SizeAdapter(context, model.getSizes());
+			SizeAdapter sizeAdapter = new SizeAdapter(context, model.getCatalog().getSizes());
 			((ListView) components.get("sizesList")).setAdapter(sizeAdapter);
 		}
 		if(components.get("toppingsList") != null) {
-			ToppingAdapter toppingAdapter = new ToppingAdapter(context, model.getToppings());
+			ToppingAdapter toppingAdapter = new ToppingAdapter(context, model.getCatalog().getToppings());
 			((ListView) components.get("toppingsList")).setAdapter(toppingAdapter);
 		}
 		if(activePizza != null){
