@@ -24,14 +24,13 @@ import java.util.HashMap;
 public class CustomerListener extends MyOnClickListener implements AdapterView.OnItemSelectedListener {
     Order order;
     public CustomerListener(Context context){
-		super(context);
+        super(context);
         components = new HashMap<>();
         orderID = -1;
     }
 
     @Override
     public void onClick(View v) {
-        ServerInterface si;
         if((((Button)components.get("back"))).equals(v)) {
             clearEditTextFields();
             MainActivity.changeScreen(MainActivity.MAIN_MENU);
@@ -50,8 +49,7 @@ public class CustomerListener extends MyOnClickListener implements AdapterView.O
             if (order == null) {
                 order = new Order();
                 order.setCustomer(person);
-                si = pc.createConnection();
-                orderID = si.addOrder(order);
+                orderID = model.addOrder(order);
             } else {
                 System.out.println("CustomerListener OrderID about to send: " + order.getOrderID());
                 order.setCustomer(person);
@@ -69,7 +67,6 @@ public class CustomerListener extends MyOnClickListener implements AdapterView.O
             MainActivity.changeScreen(MainActivity.ORDER_EDIT);
             orderID = -1;
             order = null;
-            pc.closeAndOpenClient();
         }
     }
 
@@ -84,9 +81,8 @@ public class CustomerListener extends MyOnClickListener implements AdapterView.O
 
     @Override
     public void setOrderID(int orderID){
-        ServerInterface si = pc.createConnection();
         if(orderID >= 0) {
-            order = si.getOrder(orderID);
+            order = model.getOrder(orderID);
             this.orderID = orderID;
             System.out.println("CustomerListener OrderID: " + order.getOrderID());
             ((EditText) components.get("phoneEditText")).setText(order.getCustomer().getPhoneNumbers().get(0).getNumber());
@@ -97,45 +93,44 @@ public class CustomerListener extends MyOnClickListener implements AdapterView.O
             ((EditText) components.get("zipEditText")).setText(order.getCustomer().getAddress(0).getZipcode());
             if(order.getOrderType() == ORDER_TYPE.PICK_UP){
                 ((Spinner)components.get("orderTypeSpinner")).setSelection(((ArrayAdapter)((Spinner) components.get("orderTypeSpinner")).getAdapter()).getPosition("Pickup"));
-				(components.get("addressContainer")).setVisibility(View.GONE);
-				(components.get("phoneContainer")).setVisibility(View.VISIBLE);
+                (components.get("addressContainer")).setVisibility(View.GONE);
+                (components.get("phoneContainer")).setVisibility(View.VISIBLE);
             }else if(order.getOrderType() == ORDER_TYPE.CARRY_OUT){
-				((Spinner)components.get("orderTypeSpinner")).setSelection(((ArrayAdapter) ((Spinner) components.get("orderTypeSpinner")).getAdapter()).getPosition("Carry Out"));
-				(components.get("addressContainer")).setVisibility(View.GONE);
-				(components.get("phoneContainer")).setVisibility(View.VISIBLE);
+                ((Spinner)components.get("orderTypeSpinner")).setSelection(((ArrayAdapter) ((Spinner) components.get("orderTypeSpinner")).getAdapter()).getPosition("Carry Out"));
+                (components.get("addressContainer")).setVisibility(View.GONE);
+                (components.get("phoneContainer")).setVisibility(View.VISIBLE);
             }else if(order.getOrderType() == ORDER_TYPE.DELIVERY){
-				((Spinner)components.get("orderTypeSpinner")).setSelection(((ArrayAdapter) ((Spinner) components.get("orderTypeSpinner")).getAdapter()).getPosition("Delivery"));
-				(components.get("addressContainer")).setVisibility(View.VISIBLE);
-				(components.get("phoneContainer")).setVisibility(View.VISIBLE);
+                ((Spinner)components.get("orderTypeSpinner")).setSelection(((ArrayAdapter) ((Spinner) components.get("orderTypeSpinner")).getAdapter()).getPosition("Delivery"));
+                (components.get("addressContainer")).setVisibility(View.VISIBLE);
+                (components.get("phoneContainer")).setVisibility(View.VISIBLE);
             }
         }else{
             clearEditTextFields();
         }
         components.get("phoneEditText").requestFocus();
-        pc.closeAndOpenClient();
     }
 
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-	}
+    }
 
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		if(((TextView)view).getText().toString().equals("Carry Out")){
-			(components.get("addressContainer")).setVisibility(View.GONE);
-			(components.get("phoneContainer")).setVisibility(View.VISIBLE);
-		}else if(((TextView)view).getText().toString().equals("Pickup")){
-			(components.get("addressContainer")).setVisibility(View.GONE);
-			(components.get("phoneContainer")).setVisibility(View.GONE);
-		}else if(((TextView)view).getText().toString().equals("Delivery")){
-			(components.get("addressContainer")).setVisibility(View.VISIBLE);
-			(components.get("phoneContainer")).setVisibility(View.VISIBLE);
-		}
-	}
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if(((TextView)view).getText().toString().equals("Carry Out")){
+            (components.get("addressContainer")).setVisibility(View.GONE);
+            (components.get("phoneContainer")).setVisibility(View.VISIBLE);
+        }else if(((TextView)view).getText().toString().equals("Pickup")){
+            (components.get("addressContainer")).setVisibility(View.GONE);
+            (components.get("phoneContainer")).setVisibility(View.GONE);
+        }else if(((TextView)view).getText().toString().equals("Delivery")){
+            (components.get("addressContainer")).setVisibility(View.VISIBLE);
+            (components.get("phoneContainer")).setVisibility(View.VISIBLE);
+        }
+    }
 
-	@Override
-	public void onNothingSelected(AdapterView<?> parent) {
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
-	}
+    }
 }
