@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="lipermi-0.4">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/app/libs/lipermi-0.4.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

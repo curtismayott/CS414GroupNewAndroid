@@ -24,12 +24,11 @@ import java.util.ArrayList;
 /**
  * Created by darkbobo on 11/15/15.
  */
-public class GetToppingsController extends Thread {
+public class GetToppingsController {
 
     private final int PORT_NUMBER = 7777;
     HttpURLConnection con;
     OrderEditListener view;
-    String res;
     EditText etResponse;
 
     public GetToppingsController(OrderEditListener view) {
@@ -42,10 +41,9 @@ public class GetToppingsController extends Thread {
 
     private ArrayList<Topping> parseToppings() {
         ArrayList<Topping> temp = new ArrayList<Topping>();
-        Toast.makeText(view.context, res, Toast.LENGTH_LONG).show();
-        if (res != null) {
-            String[] split = res.split("<");
-            Log.v("SHIT", split[0]);
+        if (etResponse != null) {
+            Toast.makeText(view.context, etResponse.getText().toString(), Toast.LENGTH_LONG).show();
+            String[] split = etResponse.getText().toString().split("<");
             if (split[0].contains("<toppingList>")) {
                 System.out.println(split[0] + '\t' + split[1]);
                 for (int i = 0; i < split.length; i++) {
@@ -113,7 +111,7 @@ public class GetToppingsController extends Thread {
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-            return res = GET("10.0.2.2:7777/menu/getToppings");
+            return GET("10.0.2.2:7777/menu/getToppings");
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
