@@ -15,11 +15,11 @@ import com.android.cs414groupnewandroid.adapters.OrderListAdapter;
 import com.android.cs414groupnewandroid.adapters.SaucesAdapter;
 import com.android.cs414groupnewandroid.adapters.SizeAdapter;
 import com.android.cs414groupnewandroid.adapters.ToppingAdapter;
+import com.android.cs414groupnewandroid.communication.GetToppingsController;
 import com.android.cs414groupnewandroid.objects.Drink;
 import com.android.cs414groupnewandroid.objects.Order;
 import com.android.cs414groupnewandroid.objects.OrderItem;
 import com.android.cs414groupnewandroid.objects.Pizza;
-import com.android.cs414groupnewandroid.objects.Register;
 import com.android.cs414groupnewandroid.objects.Side;
 import com.android.cs414groupnewandroid.objects.Topping;
 
@@ -63,9 +63,9 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 
 	public ArrayList<Integer> getSelectedToppings(Pizza p){
 		ArrayList<Integer> toppings = new ArrayList<>();
-		for(int i = 0; i < model.getCatalog().getToppings().size(); i++){
+		for(int i = 0; i < 0; i++){
 			for(Topping pt : p.getToppingList()){
-				if(model.getCatalog().getToppings().get(i).equals(pt)){
+				if(getServerToppings().get(i).equals(pt)){
 					toppings.add(i);
 				}
 			}
@@ -79,9 +79,9 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		if (v.equals(components.get("savePizza"))) {
 			ArrayList<Boolean> selectedToppings = ((ToppingAdapter)((ListView) components.get("toppingsList")).getAdapter()).getSelected();
 			ArrayList<Topping> toppings = new ArrayList<>();
-			for (int i = 0; i < selectedToppings.size(); i++) {
+			for (int i = 0; i < 0; i++) {
 				if(selectedToppings.get(i)){
-					toppings.add(model.getCatalog().getToppings().get(i));
+					toppings.add(getServerToppings().get(i));
 				}
 			}
 			// add new pizza to order
@@ -288,7 +288,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			((ListView) components.get("sizesList")).setAdapter(sizeAdapter);
 		}
 		if(components.get("toppingsList") != null) {
-			ToppingAdapter toppingAdapter = new ToppingAdapter(context, model.getCatalog().getToppings());
+			ToppingAdapter toppingAdapter = new ToppingAdapter(context, getServerToppings());
 			((ListView) components.get("toppingsList")).setAdapter(toppingAdapter);
 		}
 		if(activePizza != null){
@@ -305,6 +305,12 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 				}
 			}
 		}
+	}
+
+	private ArrayList<Topping> getServerToppings() {
+		GetToppingsController g = new GetToppingsController(this);
+        g.start();
+        return g.getServerToppings();
 	}
 
 	@Override

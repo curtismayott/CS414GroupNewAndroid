@@ -1,4 +1,4 @@
-package com.android.cs414groupnewandroid.controllers;
+package com.android.cs414groupnewandroid.communication;
 
 
 import com.android.cs414groupnewandroid.objects.*;

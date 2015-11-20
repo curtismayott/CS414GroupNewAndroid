@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.android.cs414groupnewandroid.communication.GetToppingsController;
 import com.android.cs414groupnewandroid.objects.Register;
 
 import java.util.HashMap;
@@ -14,9 +15,9 @@ import java.util.HashMap;
 public class MyOnClickListener implements View.OnClickListener, AdapterView.OnItemClickListener {
     public int orderID;
     Register model;
-    public PizzaClient pc;
+    public GetToppingsController pc;
     HashMap<String, View> components;
-	Context context;
+	public Context context;
     View view;
 
 	public MyOnClickListener(Context context){
@@ -29,7 +30,7 @@ public class MyOnClickListener implements View.OnClickListener, AdapterView.OnIt
     }
 
 
-    public void addClient(PizzaClient pc){
+    public void addClient(GetToppingsController pc){
         this.pc = pc;
     }
 
