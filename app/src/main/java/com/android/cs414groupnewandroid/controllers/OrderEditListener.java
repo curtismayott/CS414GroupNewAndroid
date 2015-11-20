@@ -308,8 +308,8 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 	}
 
 	private ArrayList<Topping> getServerToppings() {
-		GetToppingsController g = new GetToppingsController(this);
-        return g.getServerToppings();
+        GetToppingsController top = new GetToppingsController(this);
+        return top.getServerToppings();
 	}
 
 	@Override

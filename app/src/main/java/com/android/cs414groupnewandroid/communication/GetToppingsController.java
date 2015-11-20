@@ -1,8 +1,6 @@
 package com.android.cs414groupnewandroid.communication;
 
-import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.controllers.OrderEditListener;
@@ -29,7 +27,7 @@ public class GetToppingsController {
     private final int PORT_NUMBER = 7777;
     HttpURLConnection con;
     OrderEditListener view;
-    EditText etResponse;
+    String res;
 
     public GetToppingsController(OrderEditListener view) {
         this.view = view;
@@ -41,9 +39,9 @@ public class GetToppingsController {
 
     private ArrayList<Topping> parseToppings() {
         ArrayList<Topping> temp = new ArrayList<Topping>();
-        if (etResponse != null) {
-            Toast.makeText(view.context, etResponse.getText().toString(), Toast.LENGTH_LONG).show();
-            String[] split = etResponse.getText().toString().split("<");
+        if (res != null) {
+            Toast.makeText(view.context, res, Toast.LENGTH_LONG).show();
+            String[] split = res.split("<");
             if (split[0].contains("<toppingList>")) {
                 System.out.println(split[0] + '\t' + split[1]);
                 for (int i = 0; i < split.length; i++) {
@@ -97,27 +95,23 @@ public class GetToppingsController {
         return result;
     }
 
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-
-    }
-    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            return GET("10.0.2.2:7777/menu/getToppings");
+    private static String convertInputStreamToString(InputStream is) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append((line + "\n"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText(view.context, "Received!", Toast.LENGTH_LONG).show();
-            etResponse.setText(result);
-        }
+        return sb.toString();
     }
 }
