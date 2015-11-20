@@ -31,6 +31,14 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:support-v4:23.0.1'
-    compile files('libs/http-20070405.jar')
-    compile files('libs/httpcore-4.3.2.jar')
+    compile files('C:/Users/Jim/StudioProjects/CS414GroupNewAndroid/libs/commons-codec-1.9.jar')
+    compile files('C:/Users/Jim/StudioProjects/CS414GroupNewAndroid/libs/commons-logging-1.2.jar')
+    compile files('C:/Users/Jim/StudioProjects/CS414GroupNewAndroid/libs/fluent-hc-4.5.1.jar')
+    compile files('C:/Users/Jim/StudioProjects/CS414GroupNewAndroid/libs/httpclient-4.5.1.jar')
+    compile files('C:/Users/Jim/StudioProjects/CS414GroupNewAndroid/libs/httpclient-cache-4.5.1.jar')
+    compile files('C:/Users/Jim/StudioProjects/CS414GroupNewAndroid/libs/httpclient-win-4.5.1.jar')
+    compile files('C:/Users/Jim/StudioProjects/CS414GroupNewAndroid/libs/httpcore-4.4.3.jar')
+    compile files('C:/Users/Jim/StudioProjects/CS414GroupNewAndroid/libs/httpmime-4.5.1.jar')
+    compile files('C:/Users/Jim/StudioProjects/CS414GroupNewAndroid/libs/jna-4.1.0.jar')
+    compile files('C:/Users/Jim/StudioProjects/CS414GroupNewAndroid/libs/jna-platform-4.1.0.jar')
 }

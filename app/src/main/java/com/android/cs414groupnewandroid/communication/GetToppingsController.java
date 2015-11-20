@@ -12,7 +12,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
@@ -35,11 +34,11 @@ public class GetToppingsController {
         if (res != null) {
             Toast.makeText(view.context, res, Toast.LENGTH_LONG).show();
             String[] split = res.split("<");
-            if (split[0].contains("<toppingList>")) {
+            if (split[0].contains("toppingList>")) {
                 System.out.println(split[0] + '\t' + split[1]);
                 for (int i = 0; i < split.length; i++) {
                     if (i == 0) {
-                        split[0] = split[0].replaceAll("<toppinglist>", "");
+                        split[0] = split[0].replaceAll("toppinglist>", "");
                     }
                     createToppingFromXML(split[i]);
                 }
@@ -62,10 +61,7 @@ public class GetToppingsController {
     }
 
     public String GET(String url){
-        InputStream inputStream = null;
-        String result = "";
         try {
-
             // create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
 
