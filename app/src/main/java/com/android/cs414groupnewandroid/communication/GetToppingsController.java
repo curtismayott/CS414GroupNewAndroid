@@ -10,11 +10,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
@@ -27,17 +25,12 @@ public class GetToppingsController {
     private final int PORT_NUMBER = 7777;
     HttpURLConnection con;
     OrderEditListener view;
-    String res;
 
     public GetToppingsController(OrderEditListener view) {
         this.view = view;
     }
 
-    public ArrayList<Topping> getServerToppings() {
-        return parseToppings();
-    }
-
-    private ArrayList<Topping> parseToppings() {
+    public ArrayList<Topping> parseToppings(String res) {
         ArrayList<Topping> temp = new ArrayList<Topping>();
         if (res != null) {
             Toast.makeText(view.context, res, Toast.LENGTH_LONG).show();
@@ -68,7 +61,7 @@ public class GetToppingsController {
         return t;
     }
 
-    public static String GET(String url){
+    public String GET(String url){
         InputStream inputStream = null;
         String result = "";
         try {
@@ -80,38 +73,14 @@ public class GetToppingsController {
             HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
 
             // receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
-
+            String temp = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
             // convert inputstream to string
-            if(inputStream != null)
-                result = convertInputStreamToString(inputStream);
-            else
-                result = "Did not work!";
-
+            if(temp != null)
+                return temp;
         } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
+            Log.d("InputStream", e.toString());
         }
+        return "Toppings server-connect error";
 
-        return result;
-    }
-
-    private static String convertInputStreamToString(InputStream is) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append((line + "\n"));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return sb.toString();
     }
 }
