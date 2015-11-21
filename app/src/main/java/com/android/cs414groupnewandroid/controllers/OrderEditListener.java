@@ -17,6 +17,7 @@ import com.android.cs414groupnewandroid.adapters.OrderListAdapter;
 import com.android.cs414groupnewandroid.adapters.SaucesAdapter;
 import com.android.cs414groupnewandroid.adapters.SizeAdapter;
 import com.android.cs414groupnewandroid.adapters.ToppingAdapter;
+import com.android.cs414groupnewandroid.communication.GetOrdersController;
 import com.android.cs414groupnewandroid.communication.GetToppingsController;
 import com.android.cs414groupnewandroid.objects.Drink;
 import com.android.cs414groupnewandroid.objects.Order;
@@ -229,13 +230,18 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			order.sendPizzasToMakeLine();
 			order.sendSidesToMakeLine();
 			model.updateOrder(orderID, order);
+            //sendNewOrder(order);
 			order = null;
 			MainActivity.changeScreen(MainActivity.MAIN_MENU);
 			// TODO : send order to server
 		}
 	}
 
-	public void clearPizzaSelections() {
+    private void sendNewOrder(Order order) {
+        AsyncTask result = new GetOrdersController(this, order).execute();
+    }
+
+    public void clearPizzaSelections() {
 		if(activePizza != null) {
 			((ToppingAdapter) ((ListView) components.get("toppingsList")).getAdapter()).unselectAll();
 			((SizeAdapter) ((ListView) components.get("sizesList")).getAdapter()).unselectAll();
@@ -311,7 +317,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		}
 	}
 
-	private String getServerToppings() throws ExecutionException, InterruptedException {
+	private String getServerToppings() {
         AsyncTask result = new GetToppingsController(this).execute();
         String xml = null;
         try {
@@ -321,8 +327,8 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
         } catch (ExecutionException e) {
             Toast.makeText(context, xml.toString().toString(), Toast.LENGTH_LONG).show();
         }
-        return (String)result.get();
-	}
+        return xml;
+    }
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {

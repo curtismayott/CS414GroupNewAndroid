@@ -9,9 +9,6 @@ import com.android.cs414groupnewandroid.objects.Person;
  */
 public interface ServerInterface{
 
-    //test method to print off orders
-    public String printOrders();
-
     //adds new order to PizzaSystem
     public int addOrder(Order order);
 
