@@ -1,5 +1,6 @@
 package com.android.cs414groupnewandroid.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -34,6 +35,9 @@ public class OrderFragment extends BaseFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_order, container, false);
+		dialog = new ProgressDialog(getActivity());
+		dialog.setMessage("Loading");
+
 		orderList = (ListView)rootView.findViewById(R.id.order_list);
 		Button send = (Button)rootView.findViewById(R.id.order_send);
 		Button cancel = (Button)rootView.findViewById(R.id.order_cancel);
@@ -49,7 +53,7 @@ public class OrderFragment extends BaseFragment {
 		addDrink.setOnClickListener(controller);
 		addSide.setOnClickListener(controller);
 		orderList.setOnItemClickListener(controller);
-		orderList.setOnItemLongClickListener((OrderEditListener)controller);
+		orderList.setOnItemLongClickListener((OrderEditListener) controller);
 
 		controller.registerComponent("sendOrder", send);
 		controller.registerComponent("cancelOrder", cancel);
@@ -63,12 +67,30 @@ public class OrderFragment extends BaseFragment {
 	}
 
 	@Override
+	public void onAttach(Activity activity){
+		super.onAttach(activity);
+		Log.e("OrderFragment", "--------ON ATTACH----------");
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		Log.e("OrderFragment", "--------ON CREATE----------");
+	}
+
+	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser){
-		if(isVisibleToUser) {
-			syncHandler.sendEmptyMessage(1);
-			Log.e("OrderFragment", "blah");
-			Toast.makeText(getActivity(), "OrderFrag :: setUserVisibleHint", Toast.LENGTH_SHORT).show();
-		}
+		super.setUserVisibleHint(isVisibleToUser);
+		Log.e("OrderFragment", "--------SET USER VISIBLE HINT----------");
+	}
+
+	@Override
+	public void onResume(){
+		super.onResume();
+		Log.e("OrderFragment", "--------ON RESUME----------");
+		syncHandler.sendEmptyMessage(1);
+		Log.e("OrderFragment", "blah");
+		Toast.makeText(getActivity(), "OrderFrag :: setUserVisibleHint", Toast.LENGTH_SHORT).show();
 	}
 
 	public static Handler syncHandler = new Handler(){
@@ -87,8 +109,6 @@ public class OrderFragment extends BaseFragment {
 	};
 
 	public static void createLoadingDialog(){
-		dialog = new ProgressDialog(PizzaApplication.context);
-		dialog.setMessage("Loading");
 		dialog.show();
 	}
 }

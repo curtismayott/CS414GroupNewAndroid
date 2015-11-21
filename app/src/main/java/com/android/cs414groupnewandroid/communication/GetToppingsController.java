@@ -1,6 +1,8 @@
 package com.android.cs414groupnewandroid.communication;
 
 import android.content.Context;
+import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.controllers.OrderEditListener;
@@ -88,7 +90,8 @@ public class GetToppingsController implements Runnable {
 
     @Override
     public void run() {
-        String url = "http://10.0.2.2:7777/menu/getToppings";
+		Looper.prepare();
+		String url = "http://10.0.2.2:7777/menu/getToppings";
         String result = "";
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet get = new HttpGet(url);
@@ -101,9 +104,15 @@ public class GetToppingsController implements Runnable {
                 InputStream in = entity.getContent();
                 result = convertToString(in);
                 Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+				Log.e("GetToppingsController", result);
+				/*
+				TODO
+				********************** PARSING HERE ****************************
+				*/
             }
         } catch (Exception e) {
             Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+			Log.e("GetToppingsController", e.toString());
         }
 		OrderFragment.syncHandler.sendEmptyMessage(2);
     }

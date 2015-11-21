@@ -344,7 +344,8 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 
 	public void getServerCatalog() {
 		Thread thread = new Thread(new GetToppingsController(context));
-		thread.run();
+		thread.start();
+		//thread.run();
 		/*String xml = null;
         try {
             xml = (String)result.get();
