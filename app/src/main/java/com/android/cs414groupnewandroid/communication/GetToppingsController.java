@@ -1,25 +1,26 @@
 package com.android.cs414groupnewandroid.communication;
 
-import android.util.Log;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.controllers.OrderEditListener;
-import com.android.cs414groupnewandroid.objects.Topping;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 
 
 /**
  * Created by darkbobo on 11/15/15.
  */
-public class GetToppingsController {
+public class GetToppingsController extends AsyncTask {
 
     private final int PORT_NUMBER = 7777;
     HttpURLConnection con;
@@ -29,6 +30,7 @@ public class GetToppingsController {
         this.view = view;
     }
 
+    /*
     public ArrayList<Topping> parseToppings(String res) {
         ArrayList<Topping> temp = new ArrayList<Topping>();
         if (res != null) {
@@ -60,23 +62,69 @@ public class GetToppingsController {
         return t;
     }
 
-    public String GET(String url){
+    public String GET(String url) {
+        Looper.prepare();
+        String result = "";
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpGet get = new HttpGet(url);
+        // make GET request to the given URL
+        HttpResponse httpResponse;
         try {
-            // create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
-
-            // make GET request to the given URL
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-            // receive response as inputStream
-            String temp = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-            // convert inputstream to string
-            if(temp != null)
-                return temp;
+            httpResponse = httpclient.execute(new HttpGet(url));
+            HttpEntity entity = httpResponse.getEntity();
+            if (entity != null) {
+                InputStream in = entity.getContent();
+                result = convertToString(in);
+            }
         } catch (Exception e) {
-            Log.d("InputStream", e.toString());
+            Toast.makeText(view.context, e.toString(), Toast.LENGTH_LONG).show();
+            result = "Toppings server-connect error";
         }
         return "Toppings server-connect error";
 
+    }
+    */
+
+    @Override
+    public Object doInBackground(Object[] params) {
+        String url = "http://10.0.2.2:7777/menu/getToppings";
+        String result = "";
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpGet get = new HttpGet(url);
+        // make GET request to the given URL
+        HttpResponse httpResponse;
+        try {
+            httpResponse = httpclient.execute(get);
+            HttpEntity entity = httpResponse.getEntity();
+            if (entity != null) {
+                InputStream in = entity.getContent();
+                result = convertToString(in);
+                Toast.makeText(view.context, result, Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(view.context, e.toString(), Toast.LENGTH_LONG).show();
+            result = "Toppings server-connect error";
+        }
+        return result;
+    }
+
+    private String convertToString(InputStream is) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuffer buff = new StringBuffer();
+        String line = null;
+        try {
+            line = reader.readLine();
+            while (line != null)
+            {
+                buff.append(line + "\n");
+                line = reader.readLine();
+            }
+            is.close();
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(view.context, "!@#!@#!@#", Toast.LENGTH_LONG).show();
+        }
+        return buff.toString();
     }
 }

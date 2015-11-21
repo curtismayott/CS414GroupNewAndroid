@@ -1,6 +1,7 @@
 package com.android.cs414groupnewandroid.controllers;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.R;
 import com.android.cs414groupnewandroid.activities.MainActivity;
@@ -25,6 +27,7 @@ import com.android.cs414groupnewandroid.objects.Topping;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by darkbobo on 10/14/15.
@@ -65,7 +68,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		ArrayList<Integer> toppings = new ArrayList<>();
 		for(int i = 0; i < 0; i++){
 			for(Topping pt : p.getToppingList()){
-				if(getServerToppings().get(i).equals(pt)){
+				if(model.getCatalog().getToppings().get(i).equals(pt)){//getServerToppings().get(i).equals(pt)){
 					toppings.add(i);
 				}
 			}
@@ -81,7 +84,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			ArrayList<Topping> toppings = new ArrayList<>();
 			for (int i = 0; i < 0; i++) {
 				if(selectedToppings.get(i)){
-					toppings.add(getServerToppings().get(i));
+					toppings.add(model.getCatalog().getToppings().get(i));
 				}
 			}
 			// add new pizza to order
@@ -288,8 +291,9 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			((ListView) components.get("sizesList")).setAdapter(sizeAdapter);
 		}
 		if(components.get("toppingsList") != null) {
-			ToppingAdapter toppingAdapter = new ToppingAdapter(context, getServerToppings());
-			((ListView) components.get("toppingsList")).setAdapter(toppingAdapter);
+            ToppingAdapter toppingAdapter = null;
+            toppingAdapter = new ToppingAdapter(context, model.getCatalog().getToppings());
+            ((ListView) components.get("toppingsList")).setAdapter(toppingAdapter);
 		}
 		if(activePizza != null){
 			setPizzaScreen();
@@ -307,10 +311,17 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		}
 	}
 
-	private ArrayList<Topping> getServerToppings() {
-        GetToppingsController top = new GetToppingsController(this);
-        String res = top.GET("http://10.0.2.2:7777/menu/getToppings");
-        return top.parseToppings(res);
+	private String getServerToppings() throws ExecutionException, InterruptedException {
+        AsyncTask result = new GetToppingsController(this).execute();
+        String xml = null;
+        try {
+            xml = (String)result.get();
+        } catch (InterruptedException e) {
+            Toast.makeText(context, xml.toString(), Toast.LENGTH_LONG).show();
+        } catch (ExecutionException e) {
+            Toast.makeText(context, xml.toString().toString(), Toast.LENGTH_LONG).show();
+        }
+        return (String)result.get();
 	}
 
 	@Override

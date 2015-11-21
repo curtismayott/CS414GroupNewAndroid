@@ -1,9 +1,8 @@
 package com.android.cs414groupnewandroid.communication;
 
 
-import com.android.cs414groupnewandroid.objects.*;
-
-import java.util.ArrayList;
+import com.android.cs414groupnewandroid.objects.Order;
+import com.android.cs414groupnewandroid.objects.Person;
 
 /**
  * Created by Jim on 11/13/2015.
@@ -23,17 +22,5 @@ public interface ServerInterface{
     public void saveCustomerProfile(Person customer);
 
     public Order getOrder(int OrderID);
-
-    public ArrayList<Topping> getMenuToppings();
-
-    public ArrayList<Sauce> getSauces();
-
-    public ArrayList<PizzaSize> getSizes();
-
-    public ArrayList<Side> getSides();
-
-    public ArrayList<Drink> getDrinks();
-
-    public void updateOrder(int orderID, Order order);
 
 }
