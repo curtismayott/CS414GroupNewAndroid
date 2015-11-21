@@ -1,17 +1,27 @@
 package com.android.cs414groupnewandroid.fragments;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.android.cs414groupnewandroid.R;
+import com.android.cs414groupnewandroid.activities.MainActivity;
+import com.android.cs414groupnewandroid.activities.PizzaApplication;
 import com.android.cs414groupnewandroid.controllers.OrderEditListener;
 
 public class OrderFragment extends BaseFragment {
 	ListView orderList;
+	public static ProgressDialog dialog;
 	public static OrderFragment newInstance() {
 		OrderFragment fragment = new OrderFragment();
 		return fragment;
@@ -50,5 +60,35 @@ public class OrderFragment extends BaseFragment {
 		controller.registerComponent("drinkButton", addDrink);
 		controller.resetView();
 		return rootView;
+	}
+
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser){
+		if(isVisibleToUser) {
+			syncHandler.sendEmptyMessage(1);
+			Log.e("OrderFragment", "blah");
+			Toast.makeText(getActivity(), "OrderFrag :: setUserVisibleHint", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	public static Handler syncHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg){
+			switch (msg.what){
+				case 1: // start
+					createLoadingDialog();
+					((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerCatalog();
+					break;
+				case 2:	// finish
+					MainActivity.listeners.get(MainActivity.ORDER_EDIT).resetView();
+					dialog.dismiss();
+			}
+		}
+	};
+
+	public static void createLoadingDialog(){
+		dialog = new ProgressDialog(PizzaApplication.context);
+		dialog.setMessage("Loading");
+		dialog.show();
 	}
 }

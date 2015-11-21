@@ -19,6 +19,7 @@ public class MainMenuListener extends MyOnClickListener {
     @Override
     public void onClick(View v){
 		if(v.equals(components.get("newOrder"))){
+
 			MainActivity.changeScreen(MainActivity.CUSTOMER);
 		}
     }

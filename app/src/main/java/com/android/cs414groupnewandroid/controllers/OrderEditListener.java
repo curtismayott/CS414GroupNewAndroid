@@ -1,11 +1,14 @@
 package com.android.cs414groupnewandroid.controllers;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,25 +54,25 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		this.orderID = orderID;
 	}
 
-	public void setPizza(int pizzaID){
+	public void setPizza(int pizzaID) {
 		activePizza = order.getPizzaByID(pizzaID);
 	}
 
-	public void clearPizza(){
+	public void clearPizza() {
 		activePizza = null;
 	}
 
-	public void setPizzaScreen(){
-		((ToppingAdapter)((ListView) components.get("toppingsList")).getAdapter()).setSelectedToppings(getSelectedToppings(activePizza));
-		((SizeAdapter)((ListView) components.get("sizesList")).getAdapter()).setSelectedSize(activePizza.getSize());
-		((SaucesAdapter)((ListView) components.get("saucesList")).getAdapter()).setSelectedSauce(activePizza.getSauce());
+	public void setPizzaScreen() {
+		((ToppingAdapter) ((ListView) components.get("toppingsList")).getAdapter()).setSelectedToppings(getSelectedToppings(activePizza));
+		((SizeAdapter) ((ListView) components.get("sizesList")).getAdapter()).setSelectedSize(activePizza.getSize());
+		((SaucesAdapter) ((ListView) components.get("saucesList")).getAdapter()).setSelectedSauce(activePizza.getSauce());
 	}
 
-	public ArrayList<Integer> getSelectedToppings(Pizza p){
+	public ArrayList<Integer> getSelectedToppings(Pizza p) {
 		ArrayList<Integer> toppings = new ArrayList<>();
-		for(int i = 0; i < 0; i++){
-			for(Topping pt : p.getToppingList()){
-				if(model.getCatalog().getToppings().get(i).equals(pt)){//getServerToppings().get(i).equals(pt)){
+		for (int i = 0; i < 0; i++) {
+			for (Topping pt : p.getToppingList()) {
+				if (model.getCatalog().getToppings().get(i).equals(pt)) {//getServerToppings().get(i).equals(pt)){
 					toppings.add(i);
 				}
 			}
@@ -81,23 +84,23 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 	public void onClick(View v) {
 		Pizza pizza = new Pizza();
 		if (v.equals(components.get("savePizza"))) {
-			ArrayList<Boolean> selectedToppings = ((ToppingAdapter)((ListView) components.get("toppingsList")).getAdapter()).getSelected();
+			ArrayList<Boolean> selectedToppings = ((ToppingAdapter) ((ListView) components.get("toppingsList")).getAdapter()).getSelected();
 			ArrayList<Topping> toppings = new ArrayList<>();
 			for (int i = 0; i < 0; i++) {
-				if(selectedToppings.get(i)){
+				if (selectedToppings.get(i)) {
 					toppings.add(model.getCatalog().getToppings().get(i));
 				}
 			}
 			// add new pizza to order
 			pizza.setToppingList(toppings);
 			pizza.setSauce(model.getCatalog().getSauces().get(((SaucesAdapter) ((ListView) components.get("saucesList")).getAdapter()).getSelected()));
-			pizza.setSize(model.getCatalog().getSizes().get(((SizeAdapter)((ListView)components.get("sizesList")).getAdapter()).getSelected()));
+			pizza.setSize(model.getCatalog().getSizes().get(((SizeAdapter) ((ListView) components.get("sizesList")).getAdapter()).getSelected()));
 			pizza.calculatePrice();
 			// add/update pizza
 			// TODO
-			if(activePizza == null){
+			if (activePizza == null) {
 				order.savePizza(-1, pizza);
-			}else {
+			} else {
 				order.savePizza(activePizza.getItemID(), pizza);
 			}
 			resetView();
@@ -105,7 +108,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			clearPizzaSelections();
 			((TextView) components.get("totalDisplay")).setText("$" + Double.toString(order.getOrderTotal()));
 			MainActivity.changeScreen(MainActivity.ORDER_EDIT);
-		} else if(v.equals(components.get("cancelPizza"))){
+		} else if (v.equals(components.get("cancelPizza"))) {
 			MainActivity.changeScreen(MainActivity.ORDER_EDIT);
 		} else if (v.equals(components.get("cancelItem"))) {
 			/*if (((Button) components.get("addPizzaButton")).getText().equals("Update")) {
@@ -139,16 +142,16 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			cancelOrderDialog = new MyDialog(context);
 			cancelOrderDialog.init();
 			cancelOrderDialog.setContentView(R.layout.dialog_cancel);
-			TextView label = (TextView)cancelOrderDialog.findViewById(R.id.label);
+			TextView label = (TextView) cancelOrderDialog.findViewById(R.id.label);
 			label.setText("Cancel Order");
-			Button cancel = (Button)cancelOrderDialog.findViewById(R.id.cancel_button);
+			Button cancel = (Button) cancelOrderDialog.findViewById(R.id.cancel_button);
 			cancel.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					cancelOrderDialog.dismiss();
 				}
 			});
-			Button confirm = (Button)cancelOrderDialog.findViewById(R.id.confirm_button);
+			Button confirm = (Button) cancelOrderDialog.findViewById(R.id.confirm_button);
 			confirm.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -182,16 +185,15 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 				// do nothing
 			}
 			MainActivity.activateWindow(MainActivity.ORDER_EDIT, MainActivity.ORDER_LIST);*/
-		} else if(v.equals(components.get("addPizzaButton")))
-		{
+		} else if (v.equals(components.get("addPizzaButton"))) {
 			clearPizza();
 			MainActivity.changeScreen(MainActivity.PIZZA);
 		} else if (v.equals(components.get("sideButton"))) {
 			sideDialog = new MyDialog(context);
 			sideDialog.init();
 			sideDialog.setContentView(R.layout.dialog_item);
-			LinearLayout container = (LinearLayout)sideDialog.findViewById(R.id.items_list);
-			for(final Side s : model.getCatalog().getSides()){
+			LinearLayout container = (LinearLayout) sideDialog.findViewById(R.id.items_list);
+			for (final Side s : model.getCatalog().getSides()) {
 				Button button = new Button(context);
 				button.setText(s.toString());
 				button.setOnClickListener(new View.OnClickListener() {
@@ -205,13 +207,12 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 				container.addView(button);
 			}
 			sideDialog.show();
-		} else if (v.equals(components.get("drinkButton")))
-		{
+		} else if (v.equals(components.get("drinkButton"))) {
 			drinkDialog = new MyDialog(context);
 			drinkDialog.init();
 			drinkDialog.setContentView(R.layout.dialog_item);
-			LinearLayout container = (LinearLayout)drinkDialog.findViewById(R.id.items_list);
-			for(final Drink d : model.getCatalog().getDrinks()){
+			LinearLayout container = (LinearLayout) drinkDialog.findViewById(R.id.items_list);
+			for (final Drink d : model.getCatalog().getDrinks()) {
 				Button button = new Button(context);
 				button.setText(d.toString());
 				button.setOnClickListener(new View.OnClickListener() {
@@ -225,24 +226,48 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 				container.addView(button);
 			}
 			drinkDialog.show();
-		} else if (v.equals(components.get("sendOrder")))
-		{
-			order.sendPizzasToMakeLine();
-			order.sendSidesToMakeLine();
-			model.updateOrder(orderID, order);
-            //sendNewOrder(order);
-			order = null;
-			MainActivity.changeScreen(MainActivity.MAIN_MENU);
+		} else if (v.equals(components.get("sendOrder"))) {
+			final Dialog dialog = new Dialog(context);
+			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			dialog.setContentView(R.layout.dialog_payment);
+			Button cash = (Button) dialog.findViewById(R.id.cash_button);
+			Button card = (Button) dialog.findViewById(R.id.card_button);
+
+			cash.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					sendOrder();
+					dialog.dismiss();
+				}
+			});
+			card.setOnClickListener(new View.OnClickListener(){
+				@Override
+				public void onClick(View v) {
+					sendOrder();
+					dialog.dismiss();
+				}
+			});
+			dialog.show();
+
 			// TODO : send order to server
 		}
 	}
 
-    private void sendNewOrder(Order order) {
-        AsyncTask result = new GetOrdersController(this, order).execute();
-    }
+	public void sendOrder() {
+		order.sendPizzasToMakeLine();
+		order.sendSidesToMakeLine();
+		model.updateOrder(orderID, order);
+		//sendNewOrder(order);
+		order = null;
+		MainActivity.changeScreen(MainActivity.MAIN_MENU);
+	}
 
-    public void clearPizzaSelections() {
-		if(activePizza != null) {
+	private void sendNewOrder(Order order) {
+		AsyncTask result = new GetOrdersController(this, order).execute();
+	}
+
+	public void clearPizzaSelections() {
+		if (activePizza != null) {
 			((ToppingAdapter) ((ListView) components.get("toppingsList")).getAdapter()).unselectAll();
 			((SizeAdapter) ((ListView) components.get("sizesList")).getAdapter()).unselectAll();
 			((SaucesAdapter) ((ListView) components.get("saucesList")).getAdapter()).unselectAll();
@@ -251,28 +276,28 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		if(parent.equals(components.get("orderList"))){
-			if(parent.getAdapter().getItem(position) instanceof Pizza){
+		if (parent.equals(components.get("orderList"))) {
+			if (parent.getAdapter().getItem(position) instanceof Pizza) {
 				setPizza(((Pizza) parent.getAdapter().getItem(position)).getItemID());
 				Log.e("OrderEditListener", "PizzaID: " + activePizza.getItemID());
 				MainActivity.changeScreen(MainActivity.PIZZA);
-			}else{
+			} else {
 				// is drink or side
 			}
 		} else if (parent.equals(components.get("sizesList"))) {
-			for(int i = 0; i < parent.getAdapter().getCount(); i++){
-				((SizeAdapter)parent.getAdapter()).setSelected(i, false);
+			for (int i = 0; i < parent.getAdapter().getCount(); i++) {
+				((SizeAdapter) parent.getAdapter()).setSelected(i, false);
 			}
-			((SizeAdapter)parent.getAdapter()).setSelected(position, true);
+			((SizeAdapter) parent.getAdapter()).setSelected(position, true);
 		} else if (parent.equals(components.get("saucesList"))) {
-			for(int i = 0; i < parent.getAdapter().getCount(); i++){
-				((SaucesAdapter)parent.getAdapter()).setSelected(i, false);
+			for (int i = 0; i < parent.getAdapter().getCount(); i++) {
+				((SaucesAdapter) parent.getAdapter()).setSelected(i, false);
 			}
-			((SaucesAdapter)parent.getAdapter()).setSelected(position, true);
+			((SaucesAdapter) parent.getAdapter()).setSelected(position, true);
 		} else if (parent.equals(components.get("toppingsList"))) {
-			if(((ToppingAdapter)parent.getAdapter()).isSelected(position)) {
+			if (((ToppingAdapter) parent.getAdapter()).isSelected(position)) {
 				((ToppingAdapter) parent.getAdapter()).setSelected(position, false);
-			}else{
+			} else {
 				((ToppingAdapter) parent.getAdapter()).setSelected(position, true);
 			}
 		}
@@ -280,7 +305,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 
 	public void resetView() {
 		Log.e("OrderEditListener", "" + orderID);
-		if(components.get("orderList") != null) {
+		if (components.get("orderList") != null) {
 			if (order.getOrderItems().size() > 0) {
 				OrderListAdapter adapter = new OrderListAdapter(context, order.getOrderItems());
 				((ListView) components.get("orderList")).setAdapter(adapter);
@@ -288,23 +313,23 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 				((ListView) components.get("orderList")).setAdapter(null);
 			}
 		}
-		if(components.get("saucesList") != null) {
+		if (components.get("saucesList") != null) {
 			SaucesAdapter saucesAdapter = new SaucesAdapter(context, model.getCatalog().getSauces());
 			((ListView) components.get("saucesList")).setAdapter(saucesAdapter);
 		}
-		if(components.get("sizesList") != null) {
+		if (components.get("sizesList") != null) {
 			SizeAdapter sizeAdapter = new SizeAdapter(context, model.getCatalog().getSizes());
 			((ListView) components.get("sizesList")).setAdapter(sizeAdapter);
 		}
-		if(components.get("toppingsList") != null) {
-            ToppingAdapter toppingAdapter = null;
-            toppingAdapter = new ToppingAdapter(context, model.getCatalog().getToppings());
-            ((ListView) components.get("toppingsList")).setAdapter(toppingAdapter);
+		if (components.get("toppingsList") != null) {
+			ToppingAdapter toppingAdapter = null;
+			toppingAdapter = new ToppingAdapter(context, model.getCatalog().getToppings());
+			((ListView) components.get("toppingsList")).setAdapter(toppingAdapter);
 		}
-		if(activePizza != null){
+		if (activePizza != null) {
 			setPizzaScreen();
 		}
-		if(components.get("totalDisplay") != null) {
+		if (components.get("totalDisplay") != null) {
 			if (order != null) {
 				if (order.getOrderItems().size() != 0) {
 					//((ListView) components.get("pizzaList")).setListData(order.getOrderItems().toArray());
@@ -317,9 +342,10 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		}
 	}
 
-	private String getServerToppings() {
-        AsyncTask result = new GetToppingsController(this).execute();
-        String xml = null;
+	public void getServerCatalog() {
+		Thread thread = new Thread(new GetToppingsController(context));
+		thread.run();
+		/*String xml = null;
         try {
             xml = (String)result.get();
         } catch (InterruptedException e) {
@@ -327,17 +353,17 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
         } catch (ExecutionException e) {
             Toast.makeText(context, xml.toString().toString(), Toast.LENGTH_LONG).show();
         }
-        return xml;
-    }
+        return xml;*/
+	}
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 		cancelItemDialog = new MyDialog(context);
 		cancelItemDialog.init();
 		cancelItemDialog.setContentView(R.layout.dialog_cancel);
-		TextView label = (TextView)cancelItemDialog.findViewById(R.id.label);
-		Button cancel = (Button)cancelItemDialog.findViewById(R.id.cancel_button);
-		Button confirm = (Button)cancelItemDialog.findViewById(R.id.confirm_button);
+		TextView label = (TextView) cancelItemDialog.findViewById(R.id.label);
+		Button cancel = (Button) cancelItemDialog.findViewById(R.id.cancel_button);
+		Button confirm = (Button) cancelItemDialog.findViewById(R.id.confirm_button);
 		label.setText("Cancel Item:\n" + parent.getAdapter().getItem(position).toString());
 		cancel.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -350,9 +376,9 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		confirm.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(tParent.getAdapter().getItem(tPosition) instanceof Pizza){
-					order.removePizza((Pizza)tParent.getAdapter().getItem(tPosition));
-				}else {
+				if (tParent.getAdapter().getItem(tPosition) instanceof Pizza) {
+					order.removePizza((Pizza) tParent.getAdapter().getItem(tPosition));
+				} else {
 					order.removeItem((OrderItem) tParent.getAdapter().getItem(tPosition));
 				}
 				resetView();

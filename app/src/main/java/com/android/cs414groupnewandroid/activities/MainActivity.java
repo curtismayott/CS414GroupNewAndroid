@@ -15,8 +15,8 @@ import com.android.cs414groupnewandroid.objects.Register;
 import java.util.HashMap;
 
 public class MainActivity extends FragmentActivity {
-	private static HashMap<String,BaseFragment> fragments;
-	private static HashMap<String,MyOnClickListener> listeners;
+	public static HashMap<String,BaseFragment> fragments;
+	public static HashMap<String,MyOnClickListener> listeners;
 	private static FragmentManager manager;
 	public static final String CUSTOMER = "customer";
 	public static final String PIZZA = "pizza";

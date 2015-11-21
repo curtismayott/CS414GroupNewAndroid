@@ -1,9 +1,10 @@
 package com.android.cs414groupnewandroid.communication;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.controllers.OrderEditListener;
+import com.android.cs414groupnewandroid.fragments.OrderFragment;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -20,14 +21,14 @@ import java.net.HttpURLConnection;
 /**
  * Created by darkbobo on 11/15/15.
  */
-public class GetToppingsController extends AsyncTask {
+public class GetToppingsController implements Runnable {
 
     private final int PORT_NUMBER = 7777;
     HttpURLConnection con;
-    OrderEditListener view;
+	Context context;
 
-    public GetToppingsController(OrderEditListener view) {
-        this.view = view;
+    public GetToppingsController(Context context) {
+		this.context = context;
     }
 
     /*
@@ -86,7 +87,7 @@ public class GetToppingsController extends AsyncTask {
     */
 
     @Override
-    public Object doInBackground(Object[] params) {
+    public void run() {
         String url = "http://10.0.2.2:7777/menu/getToppings";
         String result = "";
         HttpClient httpclient = new DefaultHttpClient();
@@ -99,14 +100,15 @@ public class GetToppingsController extends AsyncTask {
             if (entity != null) {
                 InputStream in = entity.getContent();
                 result = convertToString(in);
-                Toast.makeText(view.context, result, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, result, Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
-            Toast.makeText(view.context, e.toString(), Toast.LENGTH_LONG).show();
-            result = "Toppings server-connect error";
+            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
         }
-        return result;
+		OrderFragment.syncHandler.sendEmptyMessage(2);
     }
+
+
 
     private String convertToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -123,7 +125,7 @@ public class GetToppingsController extends AsyncTask {
         }
         catch (Exception e)
         {
-            Toast.makeText(view.context, "!@#!@#!@#", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "!@#!@#!@#", Toast.LENGTH_LONG).show();
         }
         return buff.toString();
     }
