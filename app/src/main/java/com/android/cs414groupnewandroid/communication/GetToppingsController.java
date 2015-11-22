@@ -1,7 +1,6 @@
 package com.android.cs414groupnewandroid.communication;
 
 import android.content.Context;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -42,7 +41,6 @@ public class GetToppingsController implements Runnable {
 
     @Override
     public void run() {
-		Looper.prepare();
 		String url = "http://10.0.2.2:7777/menu/toppings/";
         String result = "";
         HttpClient httpclient = new DefaultHttpClient();

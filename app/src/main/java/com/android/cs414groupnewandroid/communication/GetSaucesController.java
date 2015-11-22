@@ -74,7 +74,6 @@ public class GetSaucesController implements Runnable {
         ArrayList<Sauce> list = new ArrayList<Sauce>();
         while (sc.hasNextLine()) {
             temp = sc.nextLine().trim();
-            Log.e("STRING:!@#!@#:", temp);
             if (temp.contains("itemID")) {
                 int id = Integer.parseInt(temp.replaceAll("<.*?>", ""));
                 temp = sc.nextLine().trim();

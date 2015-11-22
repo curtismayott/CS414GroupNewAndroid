@@ -17,6 +17,7 @@ import com.android.cs414groupnewandroid.adapters.OrderListAdapter;
 import com.android.cs414groupnewandroid.adapters.SaucesAdapter;
 import com.android.cs414groupnewandroid.adapters.SizeAdapter;
 import com.android.cs414groupnewandroid.adapters.ToppingAdapter;
+import com.android.cs414groupnewandroid.communication.GetDrinksController;
 import com.android.cs414groupnewandroid.communication.GetSaucesController;
 import com.android.cs414groupnewandroid.communication.GetSidesController;
 import com.android.cs414groupnewandroid.communication.GetSizesController;
@@ -421,6 +422,11 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 
     public void getServerSizes() {
         Thread thread = new Thread(new GetSizesController(context, model));
+        thread.start();
+    }
+
+    public void getServerDrinks() {
+        Thread thread = new Thread(new GetDrinksController(context, model));
         thread.start();
     }
 

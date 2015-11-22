@@ -74,7 +74,6 @@ public class GetSizesController implements Runnable {
         ArrayList<PizzaSize> list = new ArrayList<PizzaSize>();
         while (sc.hasNextLine()) {
             temp = sc.nextLine();
-            Log.e("STRING:!@#!@#:", temp);
             if (temp.contains("itemID")) {
                 double id = Double.parseDouble(temp.replaceAll("<.*?>", ""));
                 temp = sc.nextLine().trim();

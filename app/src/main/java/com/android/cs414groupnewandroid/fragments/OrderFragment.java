@@ -101,6 +101,7 @@ public class OrderFragment extends BaseFragment {
                     ((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSauces();
                     ((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSizes();
                     ((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSides();
+                    ((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerDrinks();
                     ((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSpecials();
 					break;
 				case 2:	// finish
