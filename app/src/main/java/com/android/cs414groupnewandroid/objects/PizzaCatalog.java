@@ -83,4 +83,11 @@ public class PizzaCatalog{
     public void setSpecials(ArrayList<Special> specials) {
         this.specials = specials;
     }
+
+    public void setSides(ArrayList<Side> sides) {
+        ArrayList<SideItem> s = new ArrayList<>();
+        for (Side side : sides){
+            s.add((SideItem)side);
+        }
+    }
 }

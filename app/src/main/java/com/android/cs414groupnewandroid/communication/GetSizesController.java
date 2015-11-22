@@ -73,14 +73,14 @@ public class GetSizesController implements Runnable {
         String temp;
         ArrayList<PizzaSize> list = new ArrayList<PizzaSize>();
         while (sc.hasNextLine()) {
-            temp = sc.nextLine().trim();
-            System.out.println(temp);
+            temp = sc.nextLine();
+            Log.e("STRING:!@#!@#:", temp);
             if (temp.contains("itemID")) {
-                int id = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                double id = Double.parseDouble(temp.replaceAll("<.*?>", ""));
                 temp = sc.nextLine().trim();
-                String shorty = temp.replaceAll("<.*?>", "");
+                String shorty = temp.replaceAll("<.*?>", "").replaceAll("&quot;", "''");
                 temp = sc.nextLine().trim();
-                String full = temp.replaceAll("<.*?>", "");
+                String full = temp.replaceAll("<.*?>", "").replaceAll("&quot;", "''");
                 PizzaSize size = new PizzaSize(shorty, full, id);
                 list.add(size);
             }

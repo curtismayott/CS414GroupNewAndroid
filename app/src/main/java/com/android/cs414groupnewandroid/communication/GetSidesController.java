@@ -6,11 +6,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.fragments.OrderFragment;
-import com.android.cs414groupnewandroid.objects.PizzaCatalog;
+import com.android.cs414groupnewandroid.objects.OrderItem;
+import com.android.cs414groupnewandroid.objects.PIZZA_STATUS;
 import com.android.cs414groupnewandroid.objects.Register;
-import com.android.cs414groupnewandroid.objects.Sauce;
-import com.android.cs414groupnewandroid.objects.Topping;
-import com.thoughtworks.xstream.XStream;
+import com.android.cs414groupnewandroid.objects.Side;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 
 import org.apache.http.HttpEntity;
@@ -26,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Created by Jim on 11/22/2015.
@@ -44,7 +44,7 @@ public class GetSidesController implements Runnable {
     @Override
     public void run() {
         Looper.prepare();
-        String url = "http://10.0.2.2:7777/menu/sides";
+        String url = "http://10.0.2.2:7777/menu/sides/";
         String result = "";
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet get = new HttpGet(url);
@@ -58,12 +58,9 @@ public class GetSidesController implements Runnable {
                     InputStream in = entity.getContent();
                     result = convertToString(in);
                     //Log.e("GetSaucesController", result);
-                    XStream x = new XStream();
-                    x.setClassLoader(PizzaCatalog.class.getClassLoader());
-                    x.autodetectAnnotations(true);
-                    x.addImplicitCollection(PizzaCatalog.class, "toppings", Topping.class);
-                    ArrayList<Sauce> top = (ArrayList<Sauce>) x.fromXML(result);
-                    model.getCatalog().setSauces(top);
+
+                    ArrayList<Side> top = parseSides(result);
+                    model.getCatalog().setSides(top);
                 } catch (CannotResolveClassException e){
                     Log.e("ERROR_ON_CREATION", e.getLocalizedMessage());
                 }
@@ -76,6 +73,38 @@ public class GetSidesController implements Runnable {
         OrderFragment.syncHandler.sendEmptyMessage(2);
     }
 
+    private ArrayList<Side> parseSides(String result) {
+        Scanner sc = new Scanner(result);
+        String temp;
+        ArrayList<Side> list = new ArrayList<Side>();
+        while (sc.hasNextLine()) {
+            temp = sc.nextLine();
+            if (temp.contains("price defined-in")) {
+                double Oprice = Double.parseDouble(temp.replaceAll("<.*?>", ""));
+                temp = sc.nextLine().trim();
+                int orderId = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                temp = sc.nextLine().trim();
+                temp = sc.nextLine().trim();
+                int oId = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                temp = sc.nextLine().trim();
+                int iId = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                temp = sc.nextLine().trim();
+                String name = temp.replaceAll("<.*?>", "");
+                temp = sc.nextLine().trim();
+                double price = Double.parseDouble(temp.replaceAll("<.*?>", ""));
+                temp = sc.nextLine().trim();
+                Side s = new Side(name, price);
+                s.setOrderID(orderId);
+                OrderItem oi = (OrderItem) s;
+                oi.setOrderID(iId);
+                oi.setItemID(oId);
+                oi.setPrice(Oprice);
+                oi.setStatus(PIZZA_STATUS.NEW);
+                list.add(s);
+            }
+        }
+        return list;
+    }
 
 
     private String convertToString(InputStream is) {
