@@ -4,7 +4,7 @@ package com.android.cs414groupnewandroid.objects;
  * Created by darkbobo on 9/28/15.
  */
 public class Sauce extends Topping {
-
+    public Sauce(){}
     public Sauce(String shortName) {
         super(shortName);
     }

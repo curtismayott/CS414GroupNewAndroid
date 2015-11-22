@@ -1,5 +1,7 @@
 package com.android.cs414groupnewandroid.objects;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * Created by darkbobo on 10/27/15.
  */
@@ -8,6 +10,7 @@ public class OrderItem {
     int orderID;
     PIZZA_STATUS status;
 	int itemID;
+    @JsonIgnore
 	Special special;
 
     public OrderItem(){

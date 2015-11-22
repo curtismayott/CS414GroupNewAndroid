@@ -217,4 +217,8 @@ public class Register {
             }
         }
     }
+
+    public void setCatalog(PizzaCatalog catalog) {
+        this.catalog = catalog;
+    }
 }

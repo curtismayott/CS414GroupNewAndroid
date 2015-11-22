@@ -8,11 +8,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.R;
 import com.android.cs414groupnewandroid.activities.MainActivity;
@@ -31,7 +29,6 @@ import com.android.cs414groupnewandroid.objects.Topping;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by darkbobo on 10/14/15.
@@ -343,18 +340,8 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 	}
 
 	public void getServerCatalog() {
-		Thread thread = new Thread(new GetToppingsController(context));
+		Thread thread = new Thread(new GetToppingsController(context, model));
 		thread.start();
-		//thread.run();
-		/*String xml = null;
-        try {
-            xml = (String)result.get();
-        } catch (InterruptedException e) {
-            Toast.makeText(context, xml.toString(), Toast.LENGTH_LONG).show();
-        } catch (ExecutionException e) {
-            Toast.makeText(context, xml.toString().toString(), Toast.LENGTH_LONG).show();
-        }
-        return xml;*/
 	}
 
 	@Override

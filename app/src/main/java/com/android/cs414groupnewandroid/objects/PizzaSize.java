@@ -6,6 +6,8 @@ package com.android.cs414groupnewandroid.objects;
 public class PizzaSize extends Topping{
     double price;
 
+    //add for jackson
+    public PizzaSize(){}
     public PizzaSize(String shortName, double price) {
         super(shortName);
         this.price = price;

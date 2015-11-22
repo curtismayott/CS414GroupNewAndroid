@@ -7,6 +7,8 @@ public class Topping {
     int itemID;
     String shortName;
     String fullName;
+    //default for JSON
+    public Topping(){}
     public Topping(String shortName){
         this.shortName = shortName;
     }
