@@ -99,7 +99,7 @@ public class OrderFragment extends BaseFragment {
 					createLoadingDialog();
 					((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerToppings();
                     //((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSauces();
-                   // ((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSizes();
+                    ((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSizes();
                     //((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSides();
                     //((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSpecials();
 					break;

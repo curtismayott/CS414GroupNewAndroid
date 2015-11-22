@@ -5,7 +5,6 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.cs414groupnewandroid.fragments.OrderFragment;
 import com.android.cs414groupnewandroid.objects.PizzaCatalog;
 import com.android.cs414groupnewandroid.objects.Register;
 import com.android.cs414groupnewandroid.objects.Sauce;
@@ -43,7 +42,7 @@ public class GetSaucesController implements Runnable {
         @Override
         public void run() {
             Looper.prepare();
-            String url = "http://10.0.2.2:7777/menu/sauces";
+            String url = "http://10.0.2.2:7777/menu/sauces/";
             String result = "";
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet get = new HttpGet(url);
@@ -72,7 +71,7 @@ public class GetSaucesController implements Runnable {
             } catch (IOException e) {
                 Log.e("GetToppingsController", e.getStackTrace().toString());
             }
-            OrderFragment.syncHandler.sendEmptyMessage(2);
+            //OrderFragment.syncHandler.sendEmptyMessage(2);
         }
 
 

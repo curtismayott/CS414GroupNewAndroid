@@ -79,7 +79,7 @@ public class GetSpecialsController implements Runnable {
         ArrayList<Special> list = new ArrayList<Special>();
         while (sc.hasNextLine()) {
             temp = sc.nextLine().trim();
-            if (temp.contains("specialid")) {
+            if (temp.contains("specialID")) {
                 temp = temp.replaceAll("<.*?>", "");
                 Special spec;
                 int sid = Integer.parseInt(temp);
@@ -88,46 +88,67 @@ public class GetSpecialsController implements Runnable {
                 temp = sc.nextLine().trim();
                 String name = temp.replaceAll("<.*?>", "");
                 temp = sc.nextLine().trim();
-                sc.nextLine();
-                double price = Double.parseDouble(temp.replaceAll("<.*?>", ""));
-                temp = sc.nextLine().trim();
-                int orderID = Integer.parseInt(temp.replaceAll("<.*?>", ""));
-                temp = sc.nextLine().trim();
-                String status = temp.replaceAll("<.*?>", "");
-                temp = sc.nextLine().trim();
-                String orderIid = temp.replaceAll("<.*?>", "");
-                temp = sc.nextLine().trim();
-                String itemID = temp.replaceAll("<.*?>", "");
-                temp = sc.nextLine().trim();
-                String name2 = temp.replaceAll("<.*?>", "");
-                temp = sc.nextLine().trim();
-                double price2 = Double.parseDouble(temp.replaceAll("<.*?>", ""));
-                temp = sc.nextLine().trim();
-                sc.nextLine();
-                int numToppings = Integer.parseInt(temp.replaceAll("<.*?>", ""));
-                temp = sc.nextLine().trim();
-                double discountedPrice = Double.parseDouble(temp.replaceAll("<.*?>", ""));
-                spec = new Special();
-                spec.setItemType(type);
-                spec.setSpecialID(sid);
-                spec.setName(name);
-                spec.setDiscountedPrice(discountedPrice);
                 if (type.equals("Side")) {
-                    OrderItem oi = new OrderItem(price, Integer.parseInt(orderIid));
-                    spec.setSideItem((SideItem)oi);
+                    temp = sc.nextLine().trim();
+                    String price = temp.replaceAll("<.*?>", "");
+                    temp = sc.nextLine().trim();
+                    int orderID = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                    temp = sc.nextLine().trim();
+                    String status = temp.replaceAll("<.*?>", "");
+                    temp = sc.nextLine().trim();
+                    String orderIid = temp.replaceAll("<.*?>", "");
+                    temp = sc.nextLine().trim();
+                    String itemID = temp.replaceAll("<.*?>", "");
+                    temp = sc.nextLine().trim();
+                    String name2 = temp.replaceAll("<.*?>", "");
+                    temp = sc.nextLine().trim();
+                    double price2 = Double.parseDouble(temp.replaceAll("<.*?>", ""));
+                    temp = sc.nextLine().trim();
+                    temp = sc.nextLine().trim();
+                    String numToppings = temp.replaceAll("<.*?>", "");
+                    temp = sc.nextLine().trim();
+                    spec = new Special();
+                    spec.setItemType(type);
+                    spec.setSpecialID(sid);
+                    spec.setName(name);
+                    double discountedPrice = Double.parseDouble(temp.replaceAll("<.*?>", ""));
+                    SideItem si = new SideItem(name2, Double.parseDouble(price));
+                    spec.setSideItem(si);
+                    OrderItem oi = (OrderItem)si;
+                    spec.setDiscountedPrice(discountedPrice);
                     oi.setOrderID(orderID);
+                    spec.setNumToppings(0);
                     oi.setStatus(PIZZA_STATUS.NEW);
-                    oi.setItemID(Integer.parseInt(itemID));
+                    ((SideItem) oi).setItemID(Integer.parseInt(itemID));
                     ((SideItem) oi).setName(name);
                     oi.setPrice(price2);
+                    list.add(spec);
+                    System.out.println(spec);
                 }
                 else if (type.equals("Pizza")) {
-                    PizzaSize size = new PizzaSize(status, Integer.parseInt(itemID));
-                    size.setFullName(itemID);
+                    temp = sc.nextLine().trim();
+                    int itemID = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                    temp = sc.nextLine().trim();
+                    String shorty = temp.replaceAll("<.*?>", "");
+                    temp = sc.nextLine().trim();
+                    String full = temp.replaceAll("<.*?>", "");
+                    temp = sc.nextLine().trim();
+                    Double price = Double.parseDouble(temp.replaceAll("<.*?>", ""));
+                    temp = sc.nextLine().trim();
+                    temp = sc.nextLine().trim();
+                    String numToppings = temp.replaceAll("<.*?>", "");
+                    temp = sc.nextLine().trim();
+                    spec = new Special();
+                    spec.setItemType(type);
+                    spec.setSpecialID(sid);
+                    spec.setName(name);
+                    double discountedPrice = Double.parseDouble(temp.replaceAll("<.*?>", ""));
+                    PizzaSize size = new PizzaSize(shorty, price);
+                    size.setFullName(full);
                     spec.setSize(size);
-                    spec.setSpecialID(orderID);
-                    size.setPrice(Double.parseDouble(itemID));
-                    spec.setNumToppings(Integer.parseInt(name));
+                    spec.setNumToppings(Integer.parseInt(numToppings));
+                    list.add(spec);
+                    System.out.println(spec);
                 }
             }
         }

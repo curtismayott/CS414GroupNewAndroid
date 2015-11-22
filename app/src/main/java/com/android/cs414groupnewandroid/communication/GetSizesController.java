@@ -6,11 +6,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.fragments.OrderFragment;
-import com.android.cs414groupnewandroid.objects.PizzaCatalog;
+import com.android.cs414groupnewandroid.objects.PizzaSize;
 import com.android.cs414groupnewandroid.objects.Register;
-import com.android.cs414groupnewandroid.objects.Sauce;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Created by Jim on 11/22/2015.
@@ -43,7 +41,7 @@ public class GetSizesController implements Runnable {
     @Override
     public void run() {
         Looper.prepare();
-        String url = "http://10.0.2.2:7777/menu/sizes";
+        String url = "http://10.0.2.2:7777/menu/sizes/";
         String result = "";
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet get = new HttpGet(url);
@@ -56,15 +54,10 @@ public class GetSizesController implements Runnable {
                 try {
                     InputStream in = entity.getContent();
                     result = convertToString(in);
-                    //Log.e("GetSaucesController", result);
-                    XStream x = new XStream();
-                    x.setClassLoader(PizzaCatalog.class.getClassLoader());
-                    x.autodetectAnnotations(true);
-                    x.addImplicitCollection(PizzaCatalog.class, "sauces", Sauce.class);
-                    ArrayList<Sauce> top = (ArrayList<Sauce>) x.fromXML(result);
-                    model.getCatalog().setSauces(top);
-                } catch (CannotResolveClassException e){
-                    Log.e("ERROR_ON_CREATION", e.getLocalizedMessage());
+                    ArrayList<PizzaSize> top = parseSizes(result);
+                    model.getCatalog().setSizes(top);
+                } catch (Exception e){
+                    Log.e("ERROR_ON_CREATION", ".." , e);
                 }
             }
         } catch (ClientProtocolException e) {
@@ -75,6 +68,25 @@ public class GetSizesController implements Runnable {
         OrderFragment.syncHandler.sendEmptyMessage(2);
     }
 
+    private ArrayList<PizzaSize> parseSizes(String result) {
+        Scanner sc = new Scanner(result);
+        String temp;
+        ArrayList<PizzaSize> list = new ArrayList<PizzaSize>();
+        while (sc.hasNextLine()) {
+            temp = sc.nextLine().trim();
+            System.out.println(temp);
+            if (temp.contains("itemID")) {
+                int id = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                temp = sc.nextLine().trim();
+                String shorty = temp.replaceAll("<.*?>", "");
+                temp = sc.nextLine().trim();
+                String full = temp.replaceAll("<.*?>", "");
+                PizzaSize size = new PizzaSize(shorty, full, id);
+                list.add(size);
+            }
+        }
+        return list;
+    }
 
 
     private String convertToString(InputStream is) {
