@@ -1,5 +1,7 @@
 package com.android.cs414groupnewandroid.objects;
 
+import java.util.ArrayList;
+
 /**
  * Created by darkbobo on 10/26/15.
  */
@@ -45,5 +47,18 @@ public class SideItem extends OrderItem {
 			basePrice += special.getDiscountedPrice();
 		}
 		setPrice(basePrice);
+	}
+	@Override
+	public boolean setSpecial(ArrayList<Special> specials) {
+		double price = 1000;
+		for(Special s : specials){
+			if(s.getItemType().equals("Side") && s.getSideItem().equals(this)){
+				if(price > s.getDiscountedPrice()) {
+					this.special = s;
+					price = s.getDiscountedPrice();
+				}
+			}
+		}
+		return false;
 	}
 }

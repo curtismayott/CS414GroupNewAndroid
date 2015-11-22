@@ -92,6 +92,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 			pizza.setToppingList(toppings);
 			pizza.setSauce(model.getCatalog().getSauces().get(((SaucesAdapter) ((ListView) components.get("saucesList")).getAdapter()).getSelected()));
 			pizza.setSize(model.getCatalog().getSizes().get(((SizeAdapter) ((ListView) components.get("sizesList")).getAdapter()).getSelected()));
+			pizza.setSpecial(model.getCatalog().getSpecials());
 			pizza.calculatePrice();
 			// add/update pizza
 			// TODO
@@ -196,6 +197,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 				button.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
+						s.setSpecial(model.getCatalog().getSpecials());
 						order.addSide(s);
 						sideDialog.dismiss();
 						resetView();
@@ -215,6 +217,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 				button.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
+						d.setSpecial(model.getCatalog().getSpecials());
 						order.addSide(d);
 						drinkDialog.dismiss();
 						resetView();
