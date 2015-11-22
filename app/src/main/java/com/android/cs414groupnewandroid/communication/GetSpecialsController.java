@@ -6,10 +6,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.fragments.OrderFragment;
-import com.android.cs414groupnewandroid.objects.PizzaCatalog;
+import com.android.cs414groupnewandroid.objects.PizzaSize;
 import com.android.cs414groupnewandroid.objects.Register;
-import com.android.cs414groupnewandroid.objects.Sauce;
-import com.thoughtworks.xstream.XStream;
+import com.android.cs414groupnewandroid.objects.SideItem;
+import com.android.cs414groupnewandroid.objects.Special;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 
 import org.apache.http.HttpEntity;
@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Created by Jim on 11/22/2015.
@@ -43,7 +44,7 @@ public class GetSpecialsController implements Runnable {
     @Override
     public void run() {
         Looper.prepare();
-        String url = "http://10.0.2.2:7777/menu/specials";
+        String url = "http://10.0.2.2:7777/menu/specials/";
         String result = "";
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet get = new HttpGet(url);
@@ -56,12 +57,7 @@ public class GetSpecialsController implements Runnable {
                 try {
                     InputStream in = entity.getContent();
                     result = convertToString(in);
-                    //Log.e("GetSaucesController", result);
-                    XStream x = new XStream();
-                    x.setClassLoader(PizzaCatalog.class.getClassLoader());
-                    x.autodetectAnnotations(true);
-                    x.addImplicitCollection(PizzaCatalog.class, "sauces", Sauce.class);
-                    ArrayList<Sauce> top = (ArrayList<Sauce>) x.fromXML(result);
+                    ArrayList<Special> top = parseSpecials(result);
                     model.getCatalog().setSauces(top);
                 } catch (CannotResolveClassException e){
                     Log.e("ERROR_ON_CREATION", e.getLocalizedMessage());
@@ -75,6 +71,64 @@ public class GetSpecialsController implements Runnable {
         OrderFragment.syncHandler.sendEmptyMessage(2);
     }
 
+    private ArrayList<Special> parseSpecials(String result) {
+        Scanner sc = new Scanner(result);
+        String temp;
+        ArrayList<Special> list = new ArrayList<Special>();
+        while (sc.hasNextLine()) {
+            temp = sc.nextLine().trim();
+            if (temp.contains("specialid")) {
+                temp = temp.replaceAll("<.*?>", "");
+                Special spec;
+                int sid = Integer.parseInt(temp);
+                temp = sc.nextLine().trim();
+                String type = temp.replaceAll("<.*?>", "");
+                temp = sc.nextLine().trim();
+                String name = temp.replaceAll("<.*?>", "");
+                temp = sc.nextLine().trim();
+                sc.nextLine();
+                double price = Double.parseDouble(temp.replaceAll("<.*?>", ""));
+                temp = sc.nextLine().trim();
+                int orderID = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                temp = sc.nextLine().trim();
+                String status = temp.replaceAll("<.*?>", "");
+                temp = sc.nextLine().trim();
+                int orderIid = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                temp = sc.nextLine().trim();
+                int itemID = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                temp = sc.nextLine().trim();
+                String name2 = temp.replaceAll("<.*?>", "");
+                temp = sc.nextLine().trim();
+                double price2 = Double.parseDouble(temp.replaceAll("<.*?>", ""));
+                temp = sc.nextLine().trim();
+                sc.nextLine();
+                int numToppings = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                temp = sc.nextLine().trim();
+                double discountedPrice = Double.parseDouble(temp.replaceAll("<.*?>", ""));
+                spec = new Special();
+                spec.setItemType(type);
+                spec.setSpecialID(sid);
+                spec.setName(name);
+                if (type.equals("Side")) {
+                    spec.setSideItem(new SideItem(name2, price2));
+
+                }
+                else if (type.equals("Pizza")) {
+                    PizzaSize size = new PizzaSize(status, itemID);
+                    spec.setSize(size);
+                    spec.setSpecialID(orderID);
+                    //itemid = order
+                    //shortname = status
+                    //fullname = itemid
+                    //price = itemid2
+                    //skip
+                    //numToppings = name
+                    //discountedprice = discoutedprice
+                }
+            }
+        }
+        return list;
+    }
 
 
     private String convertToString(InputStream is) {
