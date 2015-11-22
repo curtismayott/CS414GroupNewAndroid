@@ -79,4 +79,8 @@ public class PizzaCatalog{
     }
 
     private void initData(){}
+
+    public void setSpecials(ArrayList<Special> specials) {
+        this.specials = specials;
+    }
 }

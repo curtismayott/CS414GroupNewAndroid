@@ -6,6 +6,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.fragments.OrderFragment;
+import com.android.cs414groupnewandroid.objects.OrderItem;
+import com.android.cs414groupnewandroid.objects.PIZZA_STATUS;
 import com.android.cs414groupnewandroid.objects.PizzaSize;
 import com.android.cs414groupnewandroid.objects.Register;
 import com.android.cs414groupnewandroid.objects.SideItem;
@@ -57,8 +59,8 @@ public class GetSpecialsController implements Runnable {
                 try {
                     InputStream in = entity.getContent();
                     result = convertToString(in);
-                    ArrayList<Special> top = parseSpecials(result);
-                    model.getCatalog().setSauces(top);
+                    ArrayList<Special> s = parseSpecials(result);
+                    model.getCatalog().setSpecials(s);
                 } catch (CannotResolveClassException e){
                     Log.e("ERROR_ON_CREATION", e.getLocalizedMessage());
                 }
@@ -93,9 +95,9 @@ public class GetSpecialsController implements Runnable {
                 temp = sc.nextLine().trim();
                 String status = temp.replaceAll("<.*?>", "");
                 temp = sc.nextLine().trim();
-                int orderIid = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                String orderIid = temp.replaceAll("<.*?>", "");
                 temp = sc.nextLine().trim();
-                int itemID = Integer.parseInt(temp.replaceAll("<.*?>", ""));
+                String itemID = temp.replaceAll("<.*?>", "");
                 temp = sc.nextLine().trim();
                 String name2 = temp.replaceAll("<.*?>", "");
                 temp = sc.nextLine().trim();
@@ -109,21 +111,23 @@ public class GetSpecialsController implements Runnable {
                 spec.setItemType(type);
                 spec.setSpecialID(sid);
                 spec.setName(name);
+                spec.setDiscountedPrice(discountedPrice);
                 if (type.equals("Side")) {
-                    spec.setSideItem(new SideItem(name2, price2));
-
+                    OrderItem oi = new OrderItem(price, Integer.parseInt(orderIid));
+                    spec.setSideItem((SideItem)oi);
+                    oi.setOrderID(orderID);
+                    oi.setStatus(PIZZA_STATUS.NEW);
+                    oi.setItemID(Integer.parseInt(itemID));
+                    ((SideItem) oi).setName(name);
+                    oi.setPrice(price2);
                 }
                 else if (type.equals("Pizza")) {
-                    PizzaSize size = new PizzaSize(status, itemID);
+                    PizzaSize size = new PizzaSize(status, Integer.parseInt(itemID));
+                    size.setFullName(itemID);
                     spec.setSize(size);
                     spec.setSpecialID(orderID);
-                    //itemid = order
-                    //shortname = status
-                    //fullname = itemid
-                    //price = itemid2
-                    //skip
-                    //numToppings = name
-                    //discountedprice = discoutedprice
+                    size.setPrice(Double.parseDouble(itemID));
+                    spec.setNumToppings(Integer.parseInt(name));
                 }
             }
         }
