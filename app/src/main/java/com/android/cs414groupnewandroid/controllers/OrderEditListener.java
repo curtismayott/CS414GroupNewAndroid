@@ -2,7 +2,6 @@ package com.android.cs414groupnewandroid.controllers;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -293,13 +292,13 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		order.sendPizzasToMakeLine();
 		order.sendSidesToMakeLine();
 		model.updateOrder(orderID, order);
-		//sendNewOrder(order);
+		sendNewOrder(order);
 		order = null;
 		MainActivity.changeScreen(MainActivity.MAIN_MENU);
 	}
 
 	private void sendNewOrder(Order order) {
-		AsyncTask result = new PushOrderController(this, order).execute();
+        new PushOrderController(context, model, order).execute();
 	}
 
 	public void clearPizzaSelections() {
