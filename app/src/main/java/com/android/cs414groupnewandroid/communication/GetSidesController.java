@@ -100,7 +100,7 @@ public class GetSidesController implements Runnable {
                 oi.setItemID(oId);
                 oi.setPrice(Oprice);
                 oi.setStatus(PIZZA_STATUS.NEW);
-                list.add(s);
+                model.getCatalog().addItem(s);
             }
         }
         return list;

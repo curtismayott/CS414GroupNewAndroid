@@ -74,6 +74,25 @@ public class PizzaCatalog{
         return tmpSides;
     }
 
+    public void addItem(Object o){
+        if(o instanceof PizzaSize){
+            ((PizzaSize)o).setItemID(123);
+            sizes.add((PizzaSize)o);
+        }else if(o instanceof Sauce){
+            ((Sauce)o).setItemID(234);
+            sauces.add((Sauce)o);
+        }else if(o instanceof Topping){
+            ((Topping)o).setItemID(345);
+            toppings.add((Topping)o);
+        }else if(o instanceof Side){
+            ((Side)o).setItemID(456);
+            sides.add((Side)o);
+        }else if(o instanceof Drink){
+            ((Drink)o).setItemID(567);
+            sides.add((Drink)o);
+        }
+    }
+
     public ArrayList<Special> getSpecials(){
         return specials;
     }
