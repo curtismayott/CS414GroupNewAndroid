@@ -2,7 +2,6 @@ package com.android.cs414groupnewandroid.fragments;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,7 +16,6 @@ import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.R;
 import com.android.cs414groupnewandroid.activities.MainActivity;
-import com.android.cs414groupnewandroid.activities.PizzaApplication;
 import com.android.cs414groupnewandroid.controllers.OrderEditListener;
 
 public class OrderFragment extends BaseFragment {
@@ -99,7 +97,11 @@ public class OrderFragment extends BaseFragment {
 			switch (msg.what){
 				case 1: // start
 					createLoadingDialog();
-					((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerCatalog();
+					((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerToppings();
+                    //((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSauces();
+                   // ((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSizes();
+                    //((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSides();
+                    //((OrderEditListener)MainActivity.listeners.get(MainActivity.ORDER_EDIT)).getServerSpecials();
 					break;
 				case 2:	// finish
 					MainActivity.listeners.get(MainActivity.ORDER_EDIT).resetView();

@@ -9,6 +9,7 @@ import com.android.cs414groupnewandroid.fragments.OrderFragment;
 import com.android.cs414groupnewandroid.objects.PizzaCatalog;
 import com.android.cs414groupnewandroid.objects.Register;
 import com.android.cs414groupnewandroid.objects.Sauce;
+import com.android.cs414groupnewandroid.objects.Topping;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 
@@ -29,13 +30,13 @@ import java.util.ArrayList;
 /**
  * Created by Jim on 11/22/2015.
  */
-public class GetSizesController implements Runnable {
+public class GetSidesController implements Runnable {
     private final int PORT_NUMBER = 7777;
     HttpURLConnection con;
     Context context;
     Register model;
 
-    public GetSizesController(Context context, Register model) {
+    public GetSidesController(Context context, Register model) {
         this.context = context;
         this.model = model;
     }
@@ -43,7 +44,7 @@ public class GetSizesController implements Runnable {
     @Override
     public void run() {
         Looper.prepare();
-        String url = "http://10.0.2.2:7777/menu/sizes";
+        String url = "http://10.0.2.2:7777/menu/sides";
         String result = "";
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet get = new HttpGet(url);
@@ -60,7 +61,7 @@ public class GetSizesController implements Runnable {
                     XStream x = new XStream();
                     x.setClassLoader(PizzaCatalog.class.getClassLoader());
                     x.autodetectAnnotations(true);
-                    x.addImplicitCollection(PizzaCatalog.class, "sauces", Sauce.class);
+                    x.addImplicitCollection(PizzaCatalog.class, "toppings", Topping.class);
                     ArrayList<Sauce> top = (ArrayList<Sauce>) x.fromXML(result);
                     model.getCatalog().setSauces(top);
                 } catch (CannotResolveClassException e){

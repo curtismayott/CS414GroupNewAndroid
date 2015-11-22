@@ -18,16 +18,18 @@ import com.android.cs414groupnewandroid.adapters.OrderListAdapter;
 import com.android.cs414groupnewandroid.adapters.SaucesAdapter;
 import com.android.cs414groupnewandroid.adapters.SizeAdapter;
 import com.android.cs414groupnewandroid.adapters.ToppingAdapter;
-import com.android.cs414groupnewandroid.communication.GetOrdersController;
+import com.android.cs414groupnewandroid.communication.GetSaucesController;
+import com.android.cs414groupnewandroid.communication.GetSidesController;
+import com.android.cs414groupnewandroid.communication.GetSizesController;
+import com.android.cs414groupnewandroid.communication.GetSpecialsController;
 import com.android.cs414groupnewandroid.communication.GetToppingsController;
+import com.android.cs414groupnewandroid.communication.PushOrderController;
 import com.android.cs414groupnewandroid.objects.Drink;
 import com.android.cs414groupnewandroid.objects.Order;
 import com.android.cs414groupnewandroid.objects.OrderItem;
 import com.android.cs414groupnewandroid.objects.Pizza;
 import com.android.cs414groupnewandroid.objects.Side;
 import com.android.cs414groupnewandroid.objects.Topping;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -297,7 +299,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 	}
 
 	private void sendNewOrder(Order order) {
-		AsyncTask result = new GetOrdersController(this, order).execute();
+		AsyncTask result = new PushOrderController(this, order).execute();
 	}
 
 	public void clearPizzaSelections() {
@@ -375,7 +377,7 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		}
 	}
 
-	public void getServerCatalog() {
+	public void getServerToppings() {
 		Thread thread = new Thread(new GetToppingsController(context, model));
 		thread.start();
 	}
@@ -412,4 +414,25 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 		cancelItemDialog.show();
 		return true;
 	}
+
+    public void getServerSauces() {
+        Thread thread = new Thread(new GetSaucesController(context, model));
+        thread.start();
+    }
+
+    public void getServerSizes() {
+        Thread thread = new Thread(new GetSizesController(context, model));
+        thread.start();
+    }
+
+    public void getServerSides() {
+        Thread thread = new Thread(new GetSidesController(context, model));
+        thread.start();
+    }
+
+    public void getServerSpecials() {
+        Thread thread = new Thread(new GetSpecialsController(context, model));
+        thread.start();
+
+    }
 }

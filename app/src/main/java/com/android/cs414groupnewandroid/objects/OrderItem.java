@@ -1,18 +1,23 @@
 package com.android.cs414groupnewandroid.objects;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import java.util.ArrayList;
 
 /**
  * Created by darkbobo on 10/27/15.
  */
+@XStreamAlias("ORDERITEM")
 public class OrderItem {
+    @XStreamAlias("price")
     double price;
+    @XStreamAlias("orderid")
     int orderID;
+    @XStreamAlias("status")
     PIZZA_STATUS status;
+    @XStreamAlias("itemid")
 	int itemID;
-    @JsonIgnore
+    @XStreamAlias("special")
 	Special special;
 
     public OrderItem(){

@@ -1,9 +1,13 @@
 package com.android.cs414groupnewandroid.objects;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * Created by darkbobo on 9/28/15.
  */
+@XStreamAlias("PIZZASIZE")
 public class PizzaSize extends Topping{
+    @XStreamAlias("price")
     double price;
 
     //add for jackson

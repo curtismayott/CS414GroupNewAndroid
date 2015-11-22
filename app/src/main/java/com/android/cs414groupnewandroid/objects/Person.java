@@ -1,14 +1,22 @@
 package com.android.cs414groupnewandroid.objects;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import java.util.ArrayList;
 
 /**
  * Created by clark on 10/7/15.
  */
+@XStreamAlias("PERSON")
 public class Person implements CustomerInterface {
+    @XStreamAlias("name")
     private String name;
+    @XStreamAlias("addresses")
     private ArrayList<Address> addresses;
+    @XStreamAlias("phonenumbers")
     private ArrayList<Phone> phoneNumbers;
+    @XStreamAlias("points")
+    double points;
 
     public Person(){
 
@@ -29,34 +37,12 @@ public class Person implements CustomerInterface {
         return this.name;
     }
 
-    public ArrayList<Address> getAddresses() {
-        return this.addresses;
-    }
-
     public ArrayList<Phone> getPhoneNumbers() {
         return this.phoneNumbers;
     }
 
-    public void setPhoneNumbers(ArrayList<Phone> phones){
-        this.phoneNumbers = phones;
-    }
-
     public Address getAddress(int index){
         return this.addresses.get(index);
-    }
-
-    public void addAddress(Address address) {
-        if(this.addresses == null){
-            this.addresses = new ArrayList<>();
-        }
-        this.addresses.add(address);
-    }
-
-    public void setAddresses(ArrayList<Address> addresses) {
-        if(this.addresses == null){
-            this.addresses = new ArrayList<>();
-        }
-        this.addresses = addresses;
     }
 
 	@Override
@@ -73,4 +59,12 @@ public class Person implements CustomerInterface {
 	public void addCustomer(Person person) {
 
 	}
+
+    public double getPoints() {
+        return points;
+    }
+
+    public void setPoints(double points) {
+        this.points = points;
+    }
 }

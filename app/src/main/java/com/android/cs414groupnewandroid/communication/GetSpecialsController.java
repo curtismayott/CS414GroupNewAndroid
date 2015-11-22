@@ -29,13 +29,13 @@ import java.util.ArrayList;
 /**
  * Created by Jim on 11/22/2015.
  */
-public class GetSizesController implements Runnable {
+public class GetSpecialsController implements Runnable {
     private final int PORT_NUMBER = 7777;
     HttpURLConnection con;
     Context context;
     Register model;
 
-    public GetSizesController(Context context, Register model) {
+    public GetSpecialsController(Context context, Register model) {
         this.context = context;
         this.model = model;
     }
@@ -43,7 +43,7 @@ public class GetSizesController implements Runnable {
     @Override
     public void run() {
         Looper.prepare();
-        String url = "http://10.0.2.2:7777/menu/sizes";
+        String url = "http://10.0.2.2:7777/menu/specials";
         String result = "";
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet get = new HttpGet(url);

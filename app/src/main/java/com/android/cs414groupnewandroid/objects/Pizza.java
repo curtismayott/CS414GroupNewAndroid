@@ -1,15 +1,23 @@
 package com.android.cs414groupnewandroid.objects;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import java.util.ArrayList;
 
 /**
  * Created by darkbobo on 9/28/15.
  */
+@XStreamAlias("PIZZA")
 public class Pizza extends OrderItem {
+    @XStreamAlias("toppings")
     ArrayList<Topping> toppings;
+    @XStreamAlias("sauce")
     Sauce sauce;
+    @XStreamAlias("size")
     PizzaSize size;
+    @XStreamAlias("price")
     double price;
+    @XStreamAlias("orderid")
     int orderID;
 
     public Pizza(){

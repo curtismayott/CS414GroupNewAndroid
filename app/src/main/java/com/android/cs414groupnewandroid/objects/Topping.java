@@ -1,12 +1,19 @@
 package com.android.cs414groupnewandroid.objects;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * Created by darkbobo on 9/28/15.
  */
+@XStreamAlias("TOPPING")
 public class Topping {
+    @XStreamAlias("itemid")
     int itemID;
+    @XStreamAlias("shortname")
     String shortName;
+    @XStreamAlias("fullname")
     String fullName;
+
     //default for JSON
     public Topping(){}
     public Topping(String shortName){

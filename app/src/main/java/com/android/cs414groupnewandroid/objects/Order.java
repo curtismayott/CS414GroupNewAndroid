@@ -2,6 +2,8 @@ package com.android.cs414groupnewandroid.objects;
 
 import android.util.Log;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import java.util.ArrayList;
 
 /**
@@ -12,14 +14,21 @@ import java.util.ArrayList;
 TODO functionality of updating order : have totalPaid, when user edits pizza, total should be OrderTotal - TotalPaid
 */
 
-
+@XStreamAlias("ORDER")
 public class Order implements OrderInterface {
+    @XStreamAlias("orderid")
     private int orderID;
+    @XStreamAlias("customer")
     private Person customer;
+    @XStreamAlias("ispaidfor")
     boolean isPaidFor;
+    @XStreamAlias("amountpaid")
     double amountPaid;
+    @XStreamAlias("pizzas")
     private ArrayList<Pizza> pizzas;
+    @XStreamAlias("sides")
     private ArrayList<SideItem> sides;
+    @XStreamAlias("ordertype")
     private ORDER_TYPE orderType;
     public Order() {
         pizzas = new ArrayList<>();

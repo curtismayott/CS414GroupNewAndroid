@@ -1,9 +1,13 @@
 package com.android.cs414groupnewandroid.objects;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * Created by clark on 10/7/15.
  */
+@XStreamAlias("PHONE")
 public class Phone {
+    @XStreamAlias("number")
     private String number;
 
     public Phone(){

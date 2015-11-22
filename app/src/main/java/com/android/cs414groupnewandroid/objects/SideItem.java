@@ -1,13 +1,21 @@
 package com.android.cs414groupnewandroid.objects;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import java.util.ArrayList;
 
 /**
  * Created by darkbobo on 10/26/15.
  */
+@XStreamAlias("SIDEITEM")
 public class SideItem extends OrderItem {
+    @XStreamAlias("itemid")
     int itemID;
+    @XStreamAlias("name")
     String name;
+    @XStreamAlias("price")
+    double price;
+
 
     public SideItem(){
         super();
@@ -15,6 +23,7 @@ public class SideItem extends OrderItem {
     public SideItem(String name, double price){
         super(price);
         this.name = name;
+        this.price = price;
     }
 
     @Override
@@ -37,6 +46,8 @@ public class SideItem extends OrderItem {
     public void setItemID(int itemID) {
         this.itemID = itemID;
     }
+
+    public double getPrice(){ return price;}
 
 	@Override
 	public void calculatePrice(){

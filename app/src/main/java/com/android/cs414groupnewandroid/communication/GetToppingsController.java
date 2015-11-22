@@ -6,20 +6,23 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.fragments.OrderFragment;
-import com.android.cs414groupnewandroid.objects.PizzaCatalog;
 import com.android.cs414groupnewandroid.objects.Register;
+import com.android.cs414groupnewandroid.objects.Topping;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 
 /**
@@ -40,7 +43,7 @@ public class GetToppingsController implements Runnable {
     @Override
     public void run() {
 		Looper.prepare();
-		String url = "http://10.0.2.2:7777/menu";
+		String url = "http://10.0.2.2:7777/menu/toppings";
         String result = "";
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet get = new HttpGet(url);
@@ -52,16 +55,43 @@ public class GetToppingsController implements Runnable {
             if (entity != null) {
                 InputStream in = entity.getContent();
                 result = convertToString(in);
-                Log.e("GetToppingsController", result);
-                ObjectMapper map = new ObjectMapper();
-                PizzaCatalog pc = map.readValue(result, PizzaCatalog.class);
-                model.setCatalog(pc);
+                ArrayList<Topping> top = parseToppings(result);
+                model.getCatalog().setToppings(top);
             }
-        } catch (Exception e) {
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-			Log.e("GetToppingsController", e.toString());
+        } catch (ClientProtocolException e) {
+            System.out.println(e.getStackTrace());
+            Log.e("GetToppingsController", "ERROR", e);
+        } catch (IOException e) {
+            Log.e("GetToppingsController", e.getStackTrace().toString());
         }
-		OrderFragment.syncHandler.sendEmptyMessage(2);
+        OrderFragment.syncHandler.sendEmptyMessage(2);
+    }
+
+    ArrayList<Topping> parseToppings(String s){
+        Scanner sc = new Scanner(s);
+        String temp;
+        ArrayList<Topping> list = new ArrayList<Topping>();
+        while (sc.hasNextLine()) {
+            temp = sc.nextLine().trim();
+            if (temp.equals("<toppings>")) {
+                Topping tempT;
+                temp = sc.nextLine().trim();;
+                temp = temp.replace("/", "");
+                temp = temp.replace("<itemid>", "");
+                int id = Integer.parseInt(temp);
+                temp = sc.nextLine().trim();;
+                temp = temp.replace("/", "");
+                temp = temp.replace("<shortname>", "");
+                String sh = temp;
+                temp = sc.nextLine().trim();;
+                temp = temp.replace("/", "");
+                temp = temp.replace("<fullname>", "");
+                tempT = new Topping(sh, temp);
+                tempT.setItemID(id);
+                list.add(tempT);
+            }
+        }
+        return list;
     }
 
 
