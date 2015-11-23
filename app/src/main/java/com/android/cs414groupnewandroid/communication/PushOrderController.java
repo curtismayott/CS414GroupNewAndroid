@@ -2,6 +2,7 @@ package com.android.cs414groupnewandroid.communication;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.widget.Toast;
 
 import com.android.cs414groupnewandroid.fragments.OrderFragment;
@@ -60,6 +61,7 @@ public class PushOrderController implements Runnable {
 
 	@Override
 	public void run() {
+		Looper.prepare();
 		String url = "http://10.0.2.2:7777/order/in/?";
 		HttpClient httpclient = new DefaultHttpClient();
 		XStream x = new XStream();
