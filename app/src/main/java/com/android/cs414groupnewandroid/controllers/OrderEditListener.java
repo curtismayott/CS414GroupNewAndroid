@@ -24,6 +24,7 @@ import com.android.cs414groupnewandroid.communication.GetSizesController;
 import com.android.cs414groupnewandroid.communication.GetSpecialsController;
 import com.android.cs414groupnewandroid.communication.GetToppingsController;
 import com.android.cs414groupnewandroid.communication.PushOrderController;
+import com.android.cs414groupnewandroid.fragments.OrderFragment;
 import com.android.cs414groupnewandroid.objects.Drink;
 import com.android.cs414groupnewandroid.objects.Order;
 import com.android.cs414groupnewandroid.objects.OrderItem;
@@ -299,7 +300,9 @@ public class OrderEditListener extends MyOnClickListener implements AdapterView.
 	}
 
 	private void sendNewOrder(Order order) {
-        new PushOrderController(context, model, order).execute();
+		OrderFragment.syncHandler.sendEmptyMessage(3);
+		Thread thread = new Thread(new PushOrderController(context, model, order));
+		thread.start();
 	}
 
 	public void clearPizzaSelections() {

@@ -1,15 +1,20 @@
 package com.android.cs414groupnewandroid.fragments;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +26,7 @@ import com.android.cs414groupnewandroid.controllers.OrderEditListener;
 public class OrderFragment extends BaseFragment {
 	ListView orderList;
 	public static ProgressDialog dialog;
+	public static Dialog orderSentDialog;
 	public static OrderFragment newInstance() {
 		OrderFragment fragment = new OrderFragment();
 		return fragment;
@@ -35,6 +41,21 @@ public class OrderFragment extends BaseFragment {
 		View rootView = inflater.inflate(R.layout.fragment_order, container, false);
 		dialog = new ProgressDialog(getActivity());
 		dialog.setMessage("Loading");
+		orderSentDialog = new Dialog(getActivity());
+		orderSentDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		orderSentDialog.setContentView(R.layout.dialog_cancel);
+		((TextView)orderSentDialog.findViewById(R.id.label)).setText("Order Sent");
+		Button cancelDialog = (Button)orderSentDialog.findViewById(R.id.cancel_button);
+		Button confirmDialog = (Button)orderSentDialog.findViewById(R.id.confirm_button);
+		cancelDialog.setVisibility(View.GONE);
+		confirmDialog.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+		confirmDialog.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				MainActivity.changeScreen(MainActivity.MAIN_MENU);
+				orderSentDialog.dismiss();
+			}
+		});
 
 		orderList = (ListView)rootView.findViewById(R.id.order_list);
 		Button send = (Button)rootView.findViewById(R.id.order_send);
@@ -107,11 +128,22 @@ public class OrderFragment extends BaseFragment {
 				case 2:	// finish
 					MainActivity.listeners.get(MainActivity.ORDER_EDIT).resetView();
 					dialog.dismiss();
+					break;
+				case 3:
+					createLoadingDialog();
+					break;
+				case 4:
+					createOrderCompleteDialog();
+					dialog.dismiss();
+					break;
 			}
 		}
 	};
 
 	public static void createLoadingDialog(){
 		dialog.show();
+	}
+	public static void createOrderCompleteDialog(){
+		orderSentDialog.show();
 	}
 }
